@@ -1,0 +1,81 @@
+<!doctype html>
+<head>
+	<meta charset="utf-8">
+	<title>Webpack sunum</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+	<meta name="author" content="Doruk Kutlu" />
+	<link rel="stylesheet" href="css/reveal.css">
+	<link rel="stylesheet" href="css/serif.css">
+	<link rel="stylesheet" href="css/zenburn.css">
+	<link rel="stylesheet" href="css/index.css">
+	<!--[if lt IE 9]><script src="lib/js/html5shiv.js"></script><![endif]-->
+</head>
+
+<body>
+	<div class="reveal">
+		<div class="slides">
+			<section>
+				<h2>Kimim ben?</h2>
+				<img style="border-radius:80%" src="images/animal-the-muppets.jpg" width="20%">
+				<p>Doruk Kutlu</p>
+				<p>JavaScript Geliştirici</p>
+				<p><em>@doruk</em></p>
+			</section>
+			<section>
+				<section>
+					<img src="images/webpack-logo.svg" height="200px" width="200px">
+					<h2>Webpack nedir?</h2>
+				</section>
+				<section>
+					<p><b>Girdi:</b> kaynak kodunuz ve konfigürasyonunuz</p>
+					<p><b>Çıktı: </b> tarayıcılarda kullanılabilecek
+						<i>bundle</i> dosyaları
+					</p>
+				</section>
+				<section>
+					<h2>CLI</h2>
+					<p>Terminalden komutlar vererek konfigüre edebildiğiniz, JS
+					ile yazılmış bir uygulamadır.</p>
+					<pre><code class="bash">> webpack --hide-modules</code></pre>
+					<p style="font-size:2rem">Ancak, terminale uzun bir
+					komut girmek yerine, CLI'a bir <i>config objesi</i> vereceğiz.</p>
+					<pre><code class="js">// webpack.config.js
+module.exports = () => {
+  return {
+    entry: // girdi ayarları
+    output: // çıktı ayarları
+    module: // karşılaşılan dosyalara nasıl müdahale edeceğiniz
+    plugins: // build prosesinize eklentiler
+  }
+}</code></pre>
+<aside class="notes">Gereken minimal config entry ve output</aside>
+				</section>
+			</section>
+
+			<section>
+				<h2>Kodu alalım</h2>
+				<pre><code class="text">> git clone
+> npm i
+> npm start</code></pre>
+<p>ya da</p>
+<pre><code class="text">> git clone && npm i && npm start</code></pre>
+			</section>
+			</div>
+	</div>
+	<script src="js/head.min.js"></script>
+	<script src="js/reveal.js"></script>
+
+	<script>
+		Reveal.initialize({
+			"progress": false,
+			"help": false,
+			// "transition": "zoom",
+			dependencies: [
+				{ src: "js/classList.js", condition: function() { return !document.body.classList; } },
+				{ src: "plugin/highlight/highlight.js", async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+				{ src: "plugin/notes/notes.js", async: true },
+			]
+		});
+	</script>
+</body>
+</html>
