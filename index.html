@@ -27,38 +27,63 @@
 					<h2>Webpack nedir?</h2>
 				</section>
 				<section>
-					<p><b>Girdi:</b> kaynak kodunuz ve konfigürasyonunuz</p>
-					<p><b>Çıktı: </b> tarayıcılarda kullanılabilecek
-						<i>bundle</i> dosyaları
-					</p>
-				</section>
-				<section>
-					<h2>CLI</h2>
 					<p>Terminalden komutlar vererek konfigüre edebildiğiniz, JS
-					ile yazılmış bir uygulamadır.</p>
-					<pre><code class="bash">> webpack --hide-modules</code></pre>
-					<p style="font-size:2rem">Ancak, terminale uzun bir
-					komut girmek yerine, CLI'a bir <i>config objesi</i> vereceğiz.</p>
-					<pre><code class="js">// webpack.config.js
+						ile yazılmış bir uygulamadır.</p>
+						<pre><code class="bash">> webpack --hide-modules</code></pre>
+						<p style="font-size:2rem">Ancak, terminale uzun bir
+							komut girmek yerine, CLI'a bir <i>config objesi</i> (node API) vereceğiz.</p>
+							<pre><code class="js">// webpack.config.js
 module.exports = () => {
   return {
-    entry: // girdi ayarları
-    output: // çıktı ayarları
-    module: // karşılaşılan dosyalara nasıl müdahale edeceğiniz
+    entry: // modül ağının başlama noktası
+    output: // nereye ve nasıl çıktı alınacak
+    module: // karşılaşılan dosyalara nasıl müdahale edilecek
     plugins: // build prosesinize eklentiler
   }
 }</code></pre>
-<aside class="notes">Gereken minimal config entry ve output</aside>
+  	      <aside class="notes">Gereken minimal config entry ve output</aside>
+				</section>
+				<section>
+					<p><b>Girdi:</b> kaynak kodunuz (modüller ağı) ve konfigürasyonunuz</p>
+					<p><b>Çıktı: </b> tarayıcılarda kullanılabilecek <i>bundle</i> dosyaları
+					</p><br />
+					<pre><code class="html"><script src="js/uygulama.js"></script>
+<link href="css/uygulama.css"></code></pre>
+				</section>
+				<section>
+					<h2>Modül yapısı</h2>
+					<pre><code class="js">// a.js
+module.exports = 42;
+// b.js
+const a = require("./a.js");
+console.log(a); // 42</code></pre>
 				</section>
 			</section>
 
 			<section>
-				<h2>Kodu alalım</h2>
-				<pre><code class="text">> git clone
-> npm i
-> npm start</code></pre>
-<p>ya da</p>
-<pre><code class="text">> git clone && npm i && npm start</code></pre>
+				<section>
+					<div style="display:flex;align-items:center;justify-content:flex-start;">
+						<!-- <img src="images/cs-logo.png" width="100px" height="100px"> -->
+						<h4 style="display:inline">Regroup team</h4>
+					</div>
+					<pre><code class="sh">> node -v # 4 ve üzeri
+> npm -v # 3 ve üzeri
+> git --version # 2.7 ve üzeri</code></pre>
+				</section>
+
+				<section>
+				  <h2>Kodu alalım</h2>
+				  <pre><code class="sh">> git clone https://github.com/d0ruk/webpack-sunum
+> cd webpack-sunum
+> git checkout 1
+> npm i</code></pre>
+          <p>ya da</p>
+          <pre><code class="sh">> git clone https://github.com/d0ruk/webpack-sunum && \
+cd webpack-sunum && git checkout 1 && npm i</code></pre>
+        </section>
+				<section>
+				<pre><code class="js"></code></pre>
+				</section>
 			</section>
 			</div>
 	</div>
