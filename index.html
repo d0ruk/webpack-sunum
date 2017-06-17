@@ -12,6 +12,7 @@
 </head>
 
 <body>
+	<div id="timer"></div>
 	<div class="reveal">
 		<div class="slides">
 			<section>
@@ -28,12 +29,12 @@
 				</section>
 				<section>
 					<p>Terminalden komutlar vererek konfigüre edebildiğiniz, JS
-						ile yazılmış bir uygulamadır.</p>
-						<pre><code class="bash">> webpack --hide-modules</code></pre>
+						ile yazılmış bir CLI'dır.</p>
+						<pre><code class="bash">> webpack -p --entry "./src/index" --progress --hide-modules</code></pre>
 						<p style="font-size:2rem">Ancak, terminale uzun bir
-							komut girmek yerine, CLI'a bir <i>config objesi</i> (node API) vereceğiz.</p>
+							komut girmek yerine, CLI'a <br> bir config objesi <sub>(node API ile)</sub> vermek daha mantıklı.</p>
 							<pre><code class="js">// webpack.config.js
-module.exports = () => {
+module.exports = function() {
   return {
     entry: // modül ağının başlama noktası
     output: // nereye ve nasıl çıktı alınacak
@@ -47,8 +48,10 @@ module.exports = () => {
 					<p><b>Girdi:</b> kaynak kodunuz (modüller ağı) ve konfigürasyonunuz</p>
 					<p><b>Çıktı: </b> tarayıcılarda kullanılabilecek <i>bundle</i> dosyaları
 					</p><br />
-					<pre><code class="html"><script src="js/uygulama.js"></script>
-<link href="css/uygulama.css"></code></pre>
+					<pre><code class="html"></code></pre>
+				</section>
+				<section>
+					<img src="images/webpack-modular.png">
 				</section>
 				<section>
 					<h2>Modül yapısı</h2>
@@ -70,25 +73,92 @@ console.log(a); // 42</code></pre>
 > npm -v # 3 ve üzeri
 > git --version # 2.7 ve üzeri</code></pre>
 				</section>
-
 				<section>
-				  <h2>Kodu alalım</h2>
+					<h2>Kaç saniye sürecek acaba?</h2>
+					<pre><code class="sh">> mkdir webpack-test && cd webpack-test
+> npm init -y
+> npm i -D webpack # ~30sn</code></pre>
+				</section>
+				<section>
+				<p>package.json</p>
+				<pre><code class="json" data-noescape>"scripts": {
+  <mark>"start": "webpack",</mark>
+  "test": "echo \"Error: no test specified\" && exit 1"
+}</code></pre>
+					<div class="fragment">
+						<p>webpack.config.js</p>
+<pre><code class="js">const path = require("path");
+
+module.exports = () => {
+  return {
+    entry: ["./src/index.js"],
+    output: {
+      filename: "bundle.js",
+      path: path.resolve(".", "build"),
+    }
+  }
+}</code></pre>
+					</div>
+					<aside class="notes">package-lock | npm module resolution</aside>
+				</section>
+				<section>
+					<p>/src/</p>
+					<pre><code class="sh">> mkdir src && cd src</code></pre>
+					<p>./src/index.js</p>
+					<pre><code class="js">console.dir(navigator)</code></pre>
+					
+				</section>
+			</section>
+			<section>
+				<section>
+					<h2>Kodu alalım</h2>
 				  <pre><code class="sh">> git clone https://github.com/d0ruk/webpack-sunum
 > cd webpack-sunum
-> git checkout 1
+> git checkout basic
 > npm i</code></pre>
           <p>ya da</p>
           <pre><code class="sh">> git clone https://github.com/d0ruk/webpack-sunum && \
-cd webpack-sunum && git checkout 1 && npm i</code></pre>
+cd webpack-sunum && git checkout basic && npm i</code></pre>
         </section>
 				<section>
-				<pre><code class="js"></code></pre>
+					<pre><code class="js">module: {
+  rules: [
+    {
+      test: /\.css$/, // RegExp
+      include: [path.resolve(__dirname, "src")], // Array
+      use: {
+        loader: "babel-loader",
+        options: { cacheDirectory: true, }
+      },
+    },
+    {
+      test: /\.js$/
+          ...
+    }
+  ]
+}</code></pre>
+				</section>
+				<section>
+					<h2>Temel config ayarları</h2>
+					<pre><code class="js">module: {
+  entry: { [name]: Array },
+  output: { filename: String, path: String },
+  rules: [{
+    test: RegExp,
+    use: {
+      loader: String,
+      options: {}
+    }
+  }, {}, {}]
+}</code></pre>
 				</section>
 			</section>
+			<!-- ENDS HERE -->
 			</div>
 	</div>
 	<script src="js/head.min.js"></script>
 	<script src="js/reveal.js"></script>
+	<script src="js/timer.js"></script>
 
 	<script>
 		Reveal.initialize({
