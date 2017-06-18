@@ -32,11 +32,11 @@
 						ile yazılmış bir CLI'dır.</p>
 						<pre><code class="bash">> webpack -p --entry "./src/index" --progress --hide-modules</code></pre>
 						<p style="font-size:2rem">Ancak, terminale uzun bir
-							komut girmek yerine, CLI'a <br> bir config objesi <sub>(node API ile)</sub> vermek daha mantıklı.</p>
+							komut girmek yerine, CLI'a <br> bir config objesi vermek daha mantıklı.</p>
 							<pre><code class="js">// webpack.config.js
-module.exports = function() {
-  return {
-    entry: // modül ağının başlama noktası
+module.exports = function(env) {
+  return { // config objesi
+    entry: // modül ağına giriş
     output: // nereye ve nasıl çıktı alınacak
     module: // karşılaşılan dosyalara nasıl müdahale edilecek
     plugins: // build prosesinize eklentiler
@@ -46,35 +46,42 @@ module.exports = function() {
 				</section>
 				<section>
 					<p><b>Girdi:</b> kaynak kodunuz (modüller ağı) ve konfigürasyonunuz</p>
-					<p><b>Çıktı: </b> tarayıcılarda kullanılabilecek <i>bundle</i> dosyaları
-					</p><br />
-					<pre><code class="html"></code></pre>
+					<p><b>Çıktı: </b> tarayıcılarda kullanılabilecek <i>bundle</i> dosyaları</p>
 				</section>
 				<section>
 					<img src="images/webpack-modular.png">
 				</section>
 				<section>
-					<h2>Modül yapısı</h2>
-					<pre><code class="js">// a.js
-module.exports = 42;
-// b.js
-const a = require("./a.js");
-console.log(a); // 42</code></pre>
+					<h2>Her şey modül</h2>
+					<pre><code class="js">// index.js
+require("./index.css");
+const svg = require("./static/resim.svg");
+const jpeg = require("./static/resim2.jpeg");
+const foo = require("./bar.js)";
+// ya da ES2015 import
+import foo from "./bar.js"</code></pre>
+<pre><code class="js">// index.css
+@import url("https://fonts.googleapis.com/css?family=Roboto");
+@font-face {
+  font-family: "Roboto";
+  src: url("/fonts/Roboto-Regular.ttf") format("truetype");
+}</code></pre>
 				</section>
 			</section>
 
 			<section>
 				<section>
-					<div style="display:flex;align-items:center;justify-content:flex-start;">
-						<!-- <img src="images/cs-logo.png" width="100px" height="100px"> -->
-						<h4 style="display:inline">Regroup team</h4>
-					</div>
+					<img src="images/diy.jpg">
+					<h2>Minimum Viable Product</h2>
+				</section>
+				<section>
+					<p>Mutabık mıyız?</p>
 					<pre><code class="sh">> node -v # 4 ve üzeri
 > npm -v # 3 ve üzeri
 > git --version # 2.7 ve üzeri</code></pre>
 				</section>
 				<section>
-					<h2>Kaç saniye sürecek acaba?</h2>
+					<h2>Kaç saniye sürecek?</h2><br>
 					<pre><code class="sh">> mkdir webpack-test && cd webpack-test
 > npm init -y
 > npm i -D webpack # ~30sn</code></pre>
@@ -83,18 +90,20 @@ console.log(a); // 42</code></pre>
 				<p>package.json</p>
 				<pre><code class="json" data-noescape>"scripts": {
   <mark>"start": "webpack",</mark>
+  <mark>"watch": "webpack -w",</mark>
+  <mark>"build": "webpack -p",</mark>
   "test": "echo \"Error: no test specified\" && exit 1"
 }</code></pre>
 					<div class="fragment">
 						<p>webpack.config.js</p>
 <pre><code class="js">const path = require("path");
 
-module.exports = () => {
+module.exports = function(env) {
   return {
     entry: ["./src/index.js"],
     output: {
       filename: "bundle.js",
-      path: path.resolve(".", "build"),
+      path: path.resolve(__dirname, "build"),
     }
   }
 }</code></pre>
@@ -102,11 +111,13 @@ module.exports = () => {
 					<aside class="notes">package-lock | npm module resolution</aside>
 				</section>
 				<section>
-					<p>/src/</p>
 					<pre><code class="sh">> mkdir src && cd src</code></pre>
-					<p>./src/index.js</p>
-					<pre><code class="js">console.dir(navigator)</code></pre>
-					
+					<pre><code class="js">// ./src/index.js
+console.dir(navigator)</code></pre>
+					<pre><code class="sh">> npm start</code></pre>
+				</section>
+				<section>
+
 				</section>
 			</section>
 			<section>
@@ -116,10 +127,36 @@ module.exports = () => {
 > cd webpack-sunum
 > git checkout basic
 > npm i</code></pre>
-          <p>ya da</p>
-          <pre><code class="sh">> git clone https://github.com/d0ruk/webpack-sunum && \
-cd webpack-sunum && git checkout basic && npm i</code></pre>
         </section>
+				<section>
+					<pre><code class="js">{
+  entry: {
+    // string | [string]
+    chunkName: "./src/index.js",
+  },
+  output: {
+    filename: "bundle.js", // sadece dosya adı
+    // asset'lerin konulacağı klasöre absolute path
+    path: path.resolve(__dirname, "build"),
+    publicPath: "/public/"
+  }
+}</code></pre>
+				</section>
+				<section>
+					<p>Substitutions</p>
+					<pre><code class="js">{
+  entry: {
+    app: "./src/index.js",
+    search: "./src/search.js"
+  },
+  output: {
+    filename: "[name].js", // [hash] [chunkhash]
+    sourceMapFilename: "[file].map" // [id] [hash]
+    path: path.resolve(__dirname, "build"),
+    publicPath: "http://cdn.com/"
+  }
+}</code></pre>
+				</section>
 				<section>
 					<pre><code class="js">module: {
   rules: [
@@ -151,6 +188,23 @@ cd webpack-sunum && git checkout basic && npm i</code></pre>
     }
   }, {}, {}]
 }</code></pre>
+				</section>
+			</section>
+			<section>
+				<section>
+					<h3>Referanslar</h3>
+				</section>
+				<section>
+					<ul>
+						<li><a href="https://survivejs.com/webpack/introduction/">surviveJS</a></li>
+						<li><a href="https://github.com/webpack-contrib/awesome-webpack">github/awesome-webpack</a></li>
+						<li><a href="https://webpack.js.org/loaders/">docs/loaders</a></li>
+						<li><a href="https://webpack.js.org/plugins/">docs/plugins</a></li>
+						<li><a href="https://medium.com/tag/webpack">medium.com</a></li>
+					</ul>
+				</section>
+				<section>
+					<img src="images/webpack3-release.png">
 				</section>
 			</section>
 			<!-- ENDS HERE -->

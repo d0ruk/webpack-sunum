@@ -5,6 +5,11 @@ body {
   color: #4D6656;
 }*/
 
+/*section h2 {
+  color: transparent!important;
+  text-shadow: 0 0 5px rgba(255,0,0,0.6)!important;
+}*/
+
 sub {
   font-size: 1rem!important;
 }
