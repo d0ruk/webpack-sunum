@@ -25,6 +25,8 @@
     }
 
     this.clear = function() {
+      if (timeoutID) clearInterval(timeoutID);
+
       node.innerHTML = `<span id="acc"></span>`;
     }
   }

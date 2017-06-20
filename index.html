@@ -24,15 +24,63 @@
 			</section>
 			<section>
 				<section>
+					<img src="./images/deckardcain.jpg" height="400px">
+					<h2>Du bi soluklan</h2>
+				</section>
+				<section>
+					<p>Revealing Module</p>
+					<pre><code class="js">var revealingModule = (function () {
+  var private = "yassah",
+    public = "selam";
+
+  function privateFn() { return private; }
+
+  return {
+    setPrivate(val) { private = val; },
+    getPrivate: privateFn,
+    public,
+  };
+})();</code></pre>
+
+<pre><code class="js">console.log(revealingModule.private); // undefined
+console.log(revealingModule.getPrivate()); // yassah
+revealingModule.setPrivate("mahrem");
+console.log(revealingModule.getPrivate()); // mahrem
+console.log(revealingModule.public); // selam
+revealingModule.public = 42;
+console.log(revealingModule.public); // 42
+</code></pre>
+<aside class="notes">pros - multiple exports in a single file<br>cons - can import only with eval | no async | circular dependencies</aside>
+				</section>
+				<section>
+					<p>CommonJS</p>
+<pre><code class="js">// b.js
+exports = 42; // bir etkisi yok</code></pre>
+<pre><code class="js">// a.js
+var b = require("./b");
+console.log(b); // {}</code></pre>
+<hr>
+<pre><code class="js">module.exports = 42;</code></pre>
+<pre><code class="js">var b = require("./b");
+console.log(b); // 42</code></pre>
+<hr>
+<pre><code class="js">exports.meaning = 42; // module.exports eziyor</code></pre>
+<pre><code class="js">var b = require("./b");
+console.log(b); // { meaning: 42 }</code></pre>
+<aside class="notes">pros: circular is OK <br> const: sync because SS dev assumed | single export per file | browser'da native require yok</aside>
+				</section>
+			</section>
+			<section>
+				<section>
 					<img src="images/webpack-logo.svg" height="200px" width="200px">
-					<h2>Webpack nedir?</h2>
+					<h2>webpack nedir?</h2>
 				</section>
 				<section>
 					<p>Terminalden komutlar vererek konfigüre edebildiğiniz, JS
-						ile yazılmış bir CLI'dır.</p>
+						ile yazılmış bir <i>compiler</i>'dır.</p>
 						<pre><code class="bash">> webpack -p --entry "./src/index" --progress --hide-modules</code></pre>
 						<p style="font-size:2rem">Ancak, terminale uzun bir
-							komut girmek yerine, CLI'a <br> bir config objesi vermek daha mantıklı.</p>
+							komut girmek yerine, <br> bir config objesi vermek daha mantıklı.</p>
 							<pre><code class="js">// webpack.config.js
 module.exports = function(env) {
   return { // config objesi
@@ -78,7 +126,7 @@ import foo from "./bar.js"</code></pre>
 					<p>Mutabık mıyız?</p>
 					<pre><code class="sh">> node -v # 4 ve üzeri
 > npm -v # 3 ve üzeri
-> git --version # 2.7 ve üzeri</code></pre>
+> git --version # varlığın yeter</code></pre>
 				</section>
 				<section>
 					<h2>Kaç saniye sürecek?</h2><br>
@@ -108,16 +156,45 @@ module.exports = function(env) {
   }
 }</code></pre>
 					</div>
-					<aside class="notes">package-lock | npm module resolution</aside>
+					<aside class="notes">package-lock | .bin</aside>
 				</section>
 				<section>
 					<pre><code class="sh">> mkdir src && cd src</code></pre>
 					<pre><code class="js">// ./src/index.js
 console.dir(navigator)</code></pre>
 					<pre><code class="sh">> npm start</code></pre>
+					<div class="fragment">
+						<p>build/index.html</p>
+						<pre><code class="html">&lt;body&gt;&lt;script src="bundle.js"&gt;&lt;/script&gt;&lt;/body&gt;</code></pre>
+					</div>
+					<aside class="notes">webpack versiyonu check ettir</aside>
 				</section>
 				<section>
-
+					<h2>CSS</h2>
+					<pre><code class="sh">> npm i -D css-loader style-loader</code></pre>
+					<p>webpack.config.js</p>
+					<pre><code class="js">{
+  entry: /**************/
+  output: /**************/
+  module: {
+    rules:[
+      {
+        test: /\.css$/,
+        include: path.resolve(__dirname, "src"),
+        loaders: ["style-loader", "css-loader"]
+      }
+    ]
+  }
+}</code></pre>
+				</section>
+				<section>
+<pre><code class="js">/* index.css */
+body {
+  background: blue;
+}</code></pre>
+<pre><code class="js">// index.js
+require("./index.css");
+console.dir(navigator);</code></pre>
 				</section>
 			</section>
 			<section>
@@ -132,7 +209,7 @@ console.dir(navigator)</code></pre>
 					<pre><code class="js">{
   entry: {
     // string | [string]
-    chunkName: "./src/index.js",
+    "chunkName": "./src/index.js",
   },
   output: {
     filename: "bundle.js", // sadece dosya adı
@@ -146,8 +223,8 @@ console.dir(navigator)</code></pre>
 					<p>Substitutions</p>
 					<pre><code class="js">{
   entry: {
-    app: "./src/index.js",
-    search: "./src/search.js"
+    "app": "./src/index.js",
+    "search": "./src/search.js"
   },
   output: {
     filename: "[name].js", // [hash] [chunkhash]
@@ -163,10 +240,10 @@ console.dir(navigator)</code></pre>
     {
       test: /\.css$/, // RegExp
       include: [path.resolve(__dirname, "src")], // Array
-      use: {
+      use: [{
         loader: "babel-loader",
         options: { cacheDirectory: true, }
-      },
+      }, {}]
     },
     {
       test: /\.js$/
@@ -178,35 +255,94 @@ console.dir(navigator)</code></pre>
 				<section>
 					<h2>Temel config ayarları</h2>
 					<pre><code class="js">module: {
-  entry: { [name]: Array },
-  output: { filename: String, path: String },
+  entry: { "chunkName": [String] },
+  output: {
+    filename: String,
+    path: String
+  },
   rules: [{
     test: RegExp,
-    use: {
+    use: [{
       loader: String,
       options: {}
-    }
+    }, {}, {}]
   }, {}, {}]
 }</code></pre>
 				</section>
 			</section>
 			<section>
-				<section>
-					<h3>Referanslar</h3>
-				</section>
-				<section>
-					<ul>
-						<li><a href="https://survivejs.com/webpack/introduction/">surviveJS</a></li>
-						<li><a href="https://github.com/webpack-contrib/awesome-webpack">github/awesome-webpack</a></li>
-						<li><a href="https://webpack.js.org/loaders/">docs/loaders</a></li>
-						<li><a href="https://webpack.js.org/plugins/">docs/plugins</a></li>
-						<li><a href="https://medium.com/tag/webpack">medium.com</a></li>
-					</ul>
-				</section>
-				<section>
-					<img src="images/webpack3-release.png">
-				</section>
+			<section>
+				<img src="./images/jekyll-hyde.jpg">
+				<h2>Ayrı çevrelerin config'leri</h2>
 			</section>
+			<section>
+				<pre><code class="sh">> ./node_modules/.bin/webpack --env merhaba</code></pre>
+				<p>webpack.config.js</p>
+				<pre><code class="js">module.exports = env => {
+  console.log(env); // merhaba
+
+  return {};
+}</code></pre>
+				<div class="fragment">
+					<pre><code class="js">module.exports = env => {
+  const isDev = env === "development";
+
+  return {};
+}</code></pre>
+				</div>
+			</section>
+			<section>
+				<p>package.json</p>
+				<pre><code class="js">scripts: {
+  "watch": /*****************/
+  "build": /*****************/
+  "dev": webpack --env development
+}</code></pre>
+<p>webpack.config.js</p>
+<pre><code class="js">module.exports = env => {
+  const isDev = env === "development";
+
+  return {
+    entry: /*****************/
+    output: /*****************/
+  }
+}</code></pre>
+			</section>
+			<section>
+				<ul>
+					<li><a href="https://github.com/survivejs/webpack-merge">webpack-merge</a></li>
+					<li><a href="https://github.com/andywer/webpack-blocks">webpack-blocks</a></li>
+					<li><a href="https://github.com/easy-webpack">easy-webpack</a></li>
+					<li></li>
+				</ul>
+			</section>
+		</section>
+		<section>
+			<section>
+				<img src="./images/nar.jpg" width="500">
+				<h2>Chunks</h2>
+			</section>
+		</section>
+		<section>
+			<section>
+				<img src="./images/alberteinstein.jpg" height="300px">
+				<div style="display:flex;flex-direction:column">
+				<p style="align-self:flex-start">
+					“If we knew what it was we were doing, it would not be called research, would it?”
+				</p>
+				<span style="align-self:flex-end">Albert Einstein</span>
+			</div>
+			</section>
+			<section>
+				<ul>
+					<li><a href="https://survivejs.com/webpack/introduction/">surviveJS</a></li>
+					<li><a href="https://github.com/webpack-contrib/awesome-webpack">github/awesome-webpack</a></li>
+					<li><a href="https://webpack.js.org/loaders/">docs/loaders</a> - <a href="https://github.com/webpack/docs/wiki/list-of-loaders">wiki/loaders</a></li>
+					<li><a href="https://webpack.js.org/plugins/">docs/plugins</a> - <a href="https://github.com/webpack/docs/wiki/list-of-plugins">wiki/plugins</a></li>
+					<li><a href="https://medium.com/tag/webpack">medium.com/webpack</a></li>
+				</ul>
+			</section>
+		</section>
 			<!-- ENDS HERE -->
 			</div>
 	</div>
