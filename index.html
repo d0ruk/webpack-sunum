@@ -210,7 +210,6 @@ import foo from "./bar.js"</code></pre>
   "start": "webpack",
   "watch": "webpack -w",
   "build": "webpack -p",
-  "test": "echo \"Error: no test specified\" && exit 1"
 }</code></pre>
 					<div class="fragment">
 						<p>webpack.config.js <sub>(ya da webpackfile.js)</sub></p>
@@ -259,11 +258,11 @@ console.dir(navigator)</code></pre>
 }</code></pre>
 				</section>
 				<section>
-<pre><code class="js">/* index.css */
+<pre><code class="js">/* ./src/index.css */
 body {
   background: blue;
 }</code></pre>
-<pre><code class="js">// index.js
+<pre><code class="js">// ./src/index.js
 require("./index.css");
 console.dir(navigator);</code></pre>
 					<div class="fragment"><pre><code class="sh">> npm start</code></pre></div>
@@ -271,9 +270,9 @@ console.dir(navigator);</code></pre>
 				<section>
 					<pre><code class="sh">> rm build/index.html</code></pre>
 					<pre><code class="sh">> npm i -D html-webpack-plugin</code></pre>
+					<div class="fragment">
 					<p>webpack.config.js</p>
 					<pre><code class="js">const HtmlWebpackPlugin = require("html-webpack-plugin");
-
 module.exports = function(env) {
   return {
     entry: /*****************/,
@@ -282,7 +281,8 @@ module.exports = function(env) {
     plugins: [new HtmlWebpackPlugin()],
   }
 }</code></pre>
-					<div class="fragment"><pre><code class="sh">> npm run watch</code></pre></div>
+					<pre><code class="sh">> npm run watch</code></pre>
+					</div>
 				</section>
 			</section>
 			<section>
