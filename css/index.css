@@ -1,9 +1,21 @@
 a {
   color: rgba(255,0,0,.5)!important;
 }
-
+.compact {
+  margin: 0!important;
+  padding: 0!important;
+}
 a:hover {
   color: rgba(0,255,0,.5)!important;
+}
+
+ul {
+  list-style: square!important;
+  padding: 0!important;
+}
+
+li {
+  font-size:2rem!important;
 }
 
 body {

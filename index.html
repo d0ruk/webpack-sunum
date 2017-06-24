@@ -75,7 +75,7 @@ console.log(b); // { meaning: 42 }</code></pre>
 <aside class="notes">sync | developed for server-side | pros: circular is OK <br> const: sync because SS dev assumed | single export per file | browser'da native require yok</aside>
 				</section>
 				<section>
-					<p style="margin:0;padding:0"><b style="font-size:5rem">A</b>synchronous <b style="font-size:5rem">M</b>odule <b style="font-size:5rem">D</b>efinition</p>
+					<p class="compact"><b style="font-size:5rem">A</b>synchronous <b style="font-size:5rem">M</b>odule <b style="font-size:5rem">D</b>efinition</p>
 					<p style="font-size:1.5rem;margin:0;padding:0">Asenkron modül yükleme amacıyla yaratılan CommonJS fork'u</p>
 					<pre><code class="js">define("alias", ["b.js", "c.js"], function (b, c) {
 // ya da define(function(require) { var b = require("b.js") })
@@ -209,7 +209,6 @@ import foo from "./bar.js"</code></pre>
 				<pre><code class="json" data-noescape>"scripts": {
   "start": "webpack",
   "watch": "webpack -w",
-  "build": "webpack -p",
 }</code></pre>
 					<div class="fragment">
 						<p>webpack.config.js <sub>(ya da webpackfile.js)</sub></p>
@@ -247,7 +246,7 @@ console.dir(navigator)</code></pre>
   entry: /**************/,
   output: /**************/,
   module: {
-    rules:[
+    rules: [
       {
         test: /\.css$/,
         include: path.resolve(__dirname, "src"),
@@ -287,11 +286,20 @@ module.exports = function(env) {
 			</section>
 			<section>
 				<section>
-					<h2>Kodu alalım</h2>
+					<!-- <img src=""> -->
+					<h2>Digging deeper</h2>
+				</section>
+				<section>
 				  <pre><code class="sh">> git clone https://github.com/d0ruk/webpack-sunum
 > cd webpack-sunum
-> git checkout basic
+> git checkout code
 > npm i</code></pre>
+					<ul class="fragment">
+						<li>kullanımı <i>legal</i> birden çok sentaks var</li>
+						<li>config'de değişiklik yaparsanız, compilation'ı yeniden başlatmalısınız</li>
+						<li>loader sırası önemli</li>
+						<li>her eklenen loader'da, bundle'ınıza eklenen <i>runtime</i> boyutu artar</li>
+					</ul>
         </section>
 				<section>
 					<pre><code class="js">{
