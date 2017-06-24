@@ -207,13 +207,13 @@ import foo from "./bar.js"</code></pre>
 				<section>
 				<p>package.json</p>
 				<pre><code class="json" data-noescape>"scripts": {
-  <mark>"start": "webpack",</mark>
-  <mark>"watch": "webpack -w",</mark>
-  <mark>"build": "webpack -p",</mark>
+  "start": "webpack",
+  "watch": "webpack -w",
+  "build": "webpack -p",
   "test": "echo \"Error: no test specified\" && exit 1"
 }</code></pre>
 					<div class="fragment">
-						<p>webpack.config.js</p>
+						<p>webpack.config.js <sub>(ya da webpackfile.js)</sub></p>
 <pre><code class="js">const path = require("path");
 
 module.exports = function(env) {
@@ -238,7 +238,7 @@ console.dir(navigator)</code></pre>
 						<p>build/index.html</p>
 						<pre><code class="html">&lt;body&gt;&lt;script src="bundle.js"&gt;&lt;/script&gt;&lt;/body&gt;</code></pre>
 					</div>
-					<aside class="notes">webpack versiyonu check ettir</aside>
+					<aside class="notes">webpack versiyonu check ettir | package.json üst folder'da buluyor</aside>
 				</section>
 				<section>
 					<h2>CSS</h2>
@@ -266,6 +266,23 @@ body {
 <pre><code class="js">// index.js
 require("./index.css");
 console.dir(navigator);</code></pre>
+					<div class="fragment"><pre><code class="sh">> npm start</code></pre></div>
+				</section>
+				<section>
+					<pre><code class="sh">> rm build/index.html</code></pre>
+					<pre><code class="sh">> npm i -D html-webpack-plugin</code></pre>
+					<p>webpack.config.js</p>
+					<pre><code class="js">const HtmlWebpackPlugin = require("html-webpack-plugin");
+
+module.exports = function(env) {
+  return {
+    entry: /*****************/,
+    output: /*****************/,
+    module: /*****************/,
+    plugins: [new HtmlWebpackPlugin()],
+  }
+}</code></pre>
+					<div class="fragment"><pre><code class="sh">> npm run watch</code></pre></div>
 				</section>
 			</section>
 			<section>
@@ -356,6 +373,7 @@ console.dir(navigator);</code></pre>
   return {};
 }</code></pre>
 				<div class="fragment">
+					<p>yani</p>
 					<pre><code class="js">module.exports = env => {
   const isDev = env === "development";
 
@@ -384,13 +402,17 @@ console.dir(navigator);</code></pre>
 			<section>
 				<pre><code class="sh">> webpack -p</code></pre>
 				<p>===</p>
-				<pre><code class="sh">> webpack --optimize-minimize --optimize-occurrence-order</code></pre>
+				<pre><code class="sh">> webpack --optimize-minimize --define process.env.NODE_ENV="production"</code></pre>
 				<p>===</p>
 				<pre><code class="js">{
   module: /*****************/,
   plugins: [
     new webpack.optimize.UglifyJsPlugin(),
-    new webpack.optimize.OccurrenceOrderPlugin()
+    new webpack.DefinePlugin({
+      process: {
+        env: { NODE_ENV: JSON.stringify("production") }
+      }
+    }),
   ],
 }</code></pre>
 				<p>CSS minimization da yapıyor</p>
