@@ -11,8 +11,6 @@
     "type": "git",
     "url": "git+https://github.com/d0ruk/webpack-sunum.git"
   },
-  "keywords": [],
-  "author": "Doruk Kutlu",
   "license": "MIT",
   "devDependencies": {
     "css-loader": "^0.28.4",
