@@ -1,5 +1,8 @@
 const path = require("path");
+const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const CleanWebpackPlugin = require("clean-webpack-plugin");
 
 module.exports = function(env) {
   return {
@@ -8,25 +11,42 @@ module.exports = function(env) {
       "main": "./index.js",
     },
     output: {
-      filename: "bundle.js",
+      filename: "[name]_[hash:5].js",
       path: path.resolve(__dirname, "build"),
+      // publicPath: "//cdn.example.com/"
     },
     module: {
       rules: [
         {
           test: /\.css$/,
           include: path.resolve(__dirname, "src"),
+          use: ExtractTextPlugin.extract({
+            fallback: "style-loader",
+            use: [
+              { loader: "css-loader" },
+            ]
+          })
+        },
+        {
+          test: /\.js$/,
+          include: path.resolve(__dirname, "src"),
           use: [
             {
-              loader: "style-loader"
-            },
-            {
-              loader: "css-loader"
+              loader: "babel-loader",
+              options: { presets: ["react", "env"] }
             }
           ]
         }
       ]
     },
-    plugins: [new HtmlWebpackPlugin()],
+    plugins: [
+      new HtmlWebpackPlugin({
+        title: "Taytıl",
+        template: "template.html"
+      }),
+      new webpack.WatchIgnorePlugin([path.resolve(__dirname, "build")]/*, { watch: true }*/),
+      new ExtractTextPlugin({ filename: "[name]_[hash:5].css" }),
+      new CleanWebpackPlugin([path.resolve(__dirname, "build")]),
+    ],
   }
 }
