@@ -298,7 +298,7 @@ module.exports = function(env) {
 				<section>
 				  <pre><code class="sh">> git clone https://github.com/d0ruk/webpack-sunum
 > cd webpack-sunum
-> git checkout code
+> git checkout mvp
 > npm i</code></pre>
 					<ul class="fragment">
 						<li>config'de değişiklik yaparsanız, compilation'ı yeniden başlatmalısınız</li>
@@ -334,11 +334,13 @@ module.exports = function(env) {
   output: {
     filename: "[name]_[hash].js", // [hash] [chunkhash]
     path: path.resolve(__dirname, "build"),
+    publicPath: "//cdn.example.com/[hash]",
   }
 }</code></pre>
 					<p>hesaplanan hash default olarak 20 karakter</p>
 					<p>[hash:5] gibi limitlenebiliyor</p>
 					<pre><code class="js">filename: "[name]_[hash:5].js"</code></pre>
+					<aside class="notes">filename'e hash koydur</aside>
 				</section>
 				<section>
 					<ul>
@@ -392,6 +394,7 @@ module.exports = function(env) {
 				<section>
 					<h4>npm i -D extract-text-webpack-plugin@2.1.2</h4>
 					<div class="fragment">
+					<pre><code class="js">const ExtractTextPlugin = require("extract-text-webpack-plugin");</code></pre>
 					<pre><code class="js">{
   test: /\.css$/,
   include: path.resolve(__dirname, "src"),
@@ -402,13 +405,72 @@ module.exports = function(env) {
     ]
   })
 }</code></pre>
+					</div>
+					<div class="fragment">
 					<pre><code class="js">plugins: [
   new HtmlWebpackPlugin(),
-  new webpack.WatchIgnorePlugin([path.resolve(__dirname, "build")]),
   new ExtractTextPlugin({ filename: "styles.css" }),
 ]</code></pre>
 					</div>
 					<aside class="notes">npm ls --depth 0 | options object string olabilir</aside>
+				</section>
+				<section>
+					<pre><code class="js">{ filename: "[name]_[hash:5].css" } // [id] [contenthash]</code></pre>
+					<div class="fragment">
+						<h4>npm i -D clean-webpack-plugin</h4>
+						<pre><code class="js">const CleanWebpackPlugin = require("clean-webpack-plugin");
+
+return {
+  plugins: [
+    new CleanWebpackPlugin([path.resolve(__dirname, "build")]),
+  ]
+}</code></pre>
+					</div>
+				</section>
+				<section>
+					<h4 style="font-size:2rem;">npm i -D babel-loader babel-core babel-preset-env babel-preset-react</h4>
+					<div class="fragment">
+						<pre><code class="js">module: {
+  rules: [
+    /************************/
+    {
+      test: /\.js$/,
+      include: path.resolve(__dirname, "src"),
+      use: [
+        {
+          loader: "babel-loader",
+          options: { presets: ["react", "env"] }
+        }
+      ]
+    }
+  ]
+}</code></pre>
+					</div>
+				<div class="fragment">
+					<pre><code class="sh">> npm i react react-dom</code></pre>
+				</div>
+				</section>
+				<section>
+					<pre><code class="js">new HtmlWebpackPlugin({
+  title: "Taytıl",
+  template: "template.html"
+})</code></pre>
+<div class="fragment">
+	<p>./src/template.html</p>
+	<pre><code class="html">
+		asdasdasd
+	</code></pre>
+</div>
+				</section>
+				<section>
+					<p>./src/index.js</p>
+					<pre><code class="js">import "./index.css"
+import React from "react"
+import ReactDOM from "react-dom"
+
+const Component = () => <h1>Merhaba Dünya</h1>;
+
+ReactDOM.render(&lt;Component /&gt;, document.getElementById("app"));</code></pre>
 				</section>
 			</section>
 			<section>
