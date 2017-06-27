@@ -60,5 +60,14 @@ mark {
   /*background: transparent;*/
   /*display: none;*/
   /*height: 100%;*/
-  /*width: 100%;*/
+  /*width: 100%;*/improtant
+}
+
+h4 {
+  display: inline-block!important;
+  /*color: white!important;*/
+  margin: .5rem!important;
+  padding: .5rem 2rem!important;
+  background: rgba(255,0,0,.2)!important;
+  border-radius: .5rem!important;
 }

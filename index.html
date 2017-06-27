@@ -29,7 +29,7 @@
 				</section>
 				<section>
 					<p>ES2015'e kadar, JS'in standartlaşmış bir modül yükleme sistemi yoktu.</p>
-
+					<aside class="notes">githut.info</aside>
 				</section>
 				<section>
 					<p>Revealing Module</p>
@@ -110,7 +110,7 @@ console.log(b); // { meaning: 42 }</code></pre>
 					<p><a href="https://github.com/umdjs/umd/tree/master/templates">Şurada</a> örnekler bulabilirsiniz.</p>
 				</section>
 				<section>
-					<h3><a href="http://exploringjs.com/es6/ch_modules.html">ES2015 (harmony) modules</a></h3>
+					<h3><a href="http://exploringjs.com/es6/ch_modules.html">ES2015 modules</a></h3>
 					<p style="font-size:1.5rem">ECMAScript standardında tanımlanan modül yükleme yöntemi</p>
 					<p style="font-size:1.5rem">Modüller dosyalara bölünmüştür. Her dosyada en fazla bir tane modül bulunabilir.</p>
 					<div class="fragment">
@@ -197,6 +197,7 @@ import foo from "./bar.js"</code></pre>
 					<pre><code class="sh">> node -v # 4 ve üzeri
 > npm -v # 3 ve üzeri
 > git --version # varlığı yeter</code></pre>
+<aside class="notes">her > olan satır bash</aside>
 				</section>
 				<section>
 					<h2>Kaç saniye sürecek?</h2><br>
@@ -283,11 +284,16 @@ module.exports = function(env) {
 					<pre><code class="sh">> npm run watch</code></pre>
 					</div>
 				</section>
+				<section>
+					<pre><code class="sh">> npm i &lt;herhangi bir şey&gt;</code></pre>
+					<p>index.js</p>
+					<pre><code class="js">const lib = require("herhangi")</code></pre>
+				</section>
 			</section>
 			<section>
 				<section>
-					<!-- <img src=""> -->
-					<h2>Digging deeper</h2>
+					<img src="./images/deckardcain.jpg" height="400px">
+					<h2>Du bi dinle</h2>
 				</section>
 				<section>
 				  <pre><code class="sh">> git clone https://github.com/d0ruk/webpack-sunum
@@ -295,56 +301,65 @@ module.exports = function(env) {
 > git checkout code
 > npm i</code></pre>
 					<ul class="fragment">
-						<li>kullanımı <i>legal</i> birden çok sentaks var</li>
 						<li>config'de değişiklik yaparsanız, compilation'ı yeniden başlatmalısınız</li>
 						<li>loader sırası önemli</li>
 						<li>her eklenen loader'da, bundle'ınıza eklenen <i>runtime</i> boyutu artar</li>
 					</ul>
         </section>
 				<section>
+					<ul><li>kullanımı <i>legal</i> birden çok sentaks var</li></ul>
 					<pre><code class="js">{
   entry: {
-    "chunkName": "./src/index.js", // string | [string]
+    "chunkName1": "./src/index.js",  // string | [string]
+    "chunkName2": "./src/index.amd.js"
   },
-  output: {
-    filename: "bundle.js", // sadece dosya adı
-    // asset'lerin konulacağı klasöre absolute path
-    path: path.resolve(__dirname, "build"),
-    publicPath: "/public/"
-  }
 }</code></pre>
-				</section>
-				<section>
-					<p>Substitutions</p>
-					<pre><code class="js">{
-  entry: {
-    "app": "./src/index.js",
-    "search": "./src/search.js"
-  },
-  output: {
-    filename: "[name].js", // [hash] [chunkhash]
-    sourceMapFilename: "[file].map" // [id] [hash]
-    path: path.resolve(__dirname, "build"),
-    publicPath: "http://cdn.com/", // [hash]
-  }
-}</code></pre>
-				</section>
-				<section>
-					<pre><code class="js">module: {
+<pre><code class="js">module: {
   rules: [
     {
-      test: /\.js$/, // RegExp
-      include: [path.resolve(__dirname, "src")], // Array
-      use: [{
-        loader: "babel-loader",
-        options: { cacheDirectory: true, },
-      }, {}]
-    },
-    {
-      test: /\.vue$/,
-          ...
+      test: /\.css$/,
+      include: path.resolve(__dirname, "src"),
+      use: [
+        { loader: "style-loader" },
+        { loader: "css-loader" },
+      ]
     }
   ]
+}</code></pre>
+<aside class="notes">user input key'ler "" içinde</aside>
+				</section>
+				<section>
+					<ul><li><i>emit</i> edilen dosyaların isimleri değişken olabiliyor</li></ul>
+					<pre><code class="js">{
+  output: {
+    filename: "[name]_[hash].js", // [hash] [chunkhash]
+    path: path.resolve(__dirname, "build"),
+  }
+}</code></pre>
+					<p>hesaplanan hash default olarak 20 karakter</p>
+					<p>[hash:5] gibi limitlenebiliyor</p>
+					<pre><code class="js">filename: "[name]_[hash:5].js"</code></pre>
+				</section>
+				<section>
+					<ul>
+						<li>loader'lar zincirlenebilir</li>
+						<li>use kuralında options olabilir</li>
+					</ul>
+					<pre><code class="js">module: {
+  rules: [{
+    test: /\.css$/,
+    use: [
+      { loader: "style-loader" },
+      {
+        loader: "css-loader",
+        options: { importLoaders: 1 }
+      },
+      {
+        loader: "less-loader",
+        options: { noIeCompat: true }
+      }
+    ]
+  }]
 }</code></pre>
 				</section>
 				<section>
@@ -355,7 +370,7 @@ module.exports = function(env) {
     filename: String,
     path: String
   },
-	module : {
+  module : {
     rules: [{
       test: RegExp,
       use: [{
@@ -365,6 +380,35 @@ module.exports = function(env) {
     }, {}, {}]
   },
 }</code></pre>
+				</section>
+			</section>
+			<section>
+				<section>
+					<video height="400" autoplay loop>
+						<source src="./images/voltran.mp4" type="video/mp4" />
+					</video>
+					<h4 style="font-size:3.5rem">const webpack = require("webpack")</h4>
+				</section>
+				<section>
+					<h4>npm i -D extract-text-webpack-plugin@2.1.2</h4>
+					<div class="fragment">
+					<pre><code class="js">{
+  test: /\.css$/,
+  include: path.resolve(__dirname, "src"),
+  use: ExtractTextPlugin.extract({
+    fallback: "style-loader",
+    use: [
+      { loader: "css-loader" },
+    ]
+  })
+}</code></pre>
+					<pre><code class="js">plugins: [
+  new HtmlWebpackPlugin(),
+  new webpack.WatchIgnorePlugin([path.resolve(__dirname, "build")]),
+  new ExtractTextPlugin({ filename: "styles.css" }),
+]</code></pre>
+					</div>
+					<aside class="notes">npm ls --depth 0 | options object string olabilir</aside>
 				</section>
 			</section>
 			<section>
@@ -390,24 +434,6 @@ module.exports = function(env) {
 				</div>
 			</section>
 			<section>
-				<p>package.json</p>
-				<pre><code class="js">scripts: {
-  "watch": /*****************/,
-  "build": /*****************/,
-  "dev": webpack --env development,
-}</code></pre>
-<p>webpack.config.js</p>
-<pre><code class="js">module.exports = env => {
-  const isDev = env === "development";
-
-  return {
-    entry: /*****************/,
-    output: /*****************/,
-    devtool: isDev ? "cheap-eval-source-map" : "source-map",
-  }
-}</code></pre>
-			</section>
-			<section>
 				<pre><code class="sh">> webpack -p</code></pre>
 				<p>===</p>
 				<pre><code class="sh">> webpack --optimize-minimize --define process.env.NODE_ENV="production"</code></pre>
@@ -426,6 +452,43 @@ module.exports = function(env) {
 				<p>CSS minimization da yapıyor</p>
 			</section>
 			<section>
+				<p style="font-size:1.5rem">package.json</p>
+				<pre><code class="js">scripts: {
+  "watch": /*****************/,
+  "build": /*****************/,
+  "dev": webpack --env development,
+}</code></pre>
+<p style="font-size:1.5rem">webpack.config.js</p>
+<pre><code class="js">module.exports = env => {
+  const isDev = env === "development";
+
+  return {
+    entry: /*****************/,
+    output: /*****************/,
+    plugins: [
+      new webpack.DefinePlugin({
+        process: {
+          env: { NODE_ENV: JSON.stringify("production") }
+        }
+      }),
+    ]
+  }
+}</code></pre>
+<aside class="notes">config çirkinleşmeye başladı</aside>
+			</section>
+			<section>
+			<pre><code class="js">plugins: [
+  new webpack.DefinePlugin({
+  process: {
+    env: { NODE_ENV: isDev
+			? JSON.stringify("development")
+			: JSON.stringify("production"),
+    }
+  }
+}),
+]</code></pre>
+			</section>
+			<section>
 				<ul>
 					<li><a href="https://github.com/survivejs/webpack-merge">webpack-merge</a></li>
 					<li><a href="https://github.com/andywer/webpack-blocks">webpack-blocks</a></li>
@@ -435,8 +498,16 @@ module.exports = function(env) {
 			</section>
 		</section>
 		<section>
-			<img src="./images/plugins.jpg" width="400">
-			<h2>Plugins</h2>
+			<section>
+				<img src="./images/plugins.jpg" width="400">
+				<h2>Plugins abound</h2>
+			</section>
+			<section>
+				<pre><code class="sh">> touch test.js</code></pre>
+				<p>test.js</p>
+				<pre><code class="js">const webpack = require("webpack");
+console.log(webpack);</code></pre>
+			</section>
 		</section>
 		<section>
 			<section>
@@ -460,7 +531,13 @@ module.exports = function(env) {
 			<section>
 				<pre><code class="js">target: "web" | "webworker" | "node" | "async-node" | "node-webkit" | "electron" | "electron-renderer"</code></pre>
 				<pre><code class="js">bail: true | false</code></pre>
-
+			</section>
+			<section>
+				<p>output.publicPath = "/assets/[hash]/"</p>
+				<p>output: {
+	path: "/home/proj/cdn/assets/[hash]",
+	publicPath: "http://cdn.example.com/assets/[hash]/"
+}</p>
 			</section>
 		</section>
 		<section>
