@@ -206,13 +206,13 @@ import foo from "./bar.js"</code></pre>
 > npm i -D webpack # ~30sn</code></pre>
 				</section>
 				<section>
-				<p>package.json</p>
+				<p>./package.json</p>
 				<pre><code class="json" data-noescape>"scripts": {
   "start": "webpack",
   "watch": "webpack -w",
 }</code></pre>
 					<div class="fragment">
-						<p>webpack.config.js <sub>(ya da webpackfile.js)</sub></p>
+						<p>./webpack.config.js <sub>(ya da webpackfile.js)</sub></p>
 <pre><code class="js">const path = require("path");
 
 module.exports = function(env) {
@@ -230,11 +230,11 @@ module.exports = function(env) {
 				</section>
 				<section>
 					<pre><code class="sh">> mkdir src && cd src</code></pre>
-					<pre><code class="js">// ./src/index.js
-console.dir(navigator)</code></pre>
-					<pre><code class="sh">> npm start</code></pre>
+					<p>./src/index.js</p>
+					<pre><code class="js">console.dir(navigator)</code></pre>
+					<div class="fragment"><pre><code class="sh">> npm start</code></pre></div>
 					<div class="fragment">
-						<p>build/index.html</p>
+						<p>./build/index.html</p>
 						<pre><code class="html">&lt;body&gt;&lt;script src="bundle.js"&gt;&lt;/script&gt;&lt;/body&gt;</code></pre>
 					</div>
 					<aside class="notes">webpack versiyonu check ettir | package.json üst folder'da buluyor</aside>
@@ -258,12 +258,12 @@ console.dir(navigator)</code></pre>
 }</code></pre>
 				</section>
 				<section>
-<pre><code class="js">/* ./src/index.css */
-body {
+					<p>./src/index.css</p>
+<pre><code class="js">body {
   background: blue;
 }</code></pre>
-<pre><code class="js">// ./src/index.js
-require("./index.css");
+<p>./src/index.js</p>
+<pre><code class="js">require("./index.css");
 console.dir(navigator);</code></pre>
 					<div class="fragment"><pre><code class="sh">> npm start</code></pre></div>
 				</section>
@@ -339,8 +339,6 @@ module.exports = function(env) {
 }</code></pre>
 					<p>hesaplanan hash default olarak 20 karakter</p>
 					<p>[hash:5] gibi limitlenebiliyor</p>
-					<pre><code class="js">filename: "[name]_[hash:5].js"</code></pre>
-					<aside class="notes">filename'e hash koydur</aside>
 				</section>
 				<section>
 					<ul>
@@ -389,7 +387,7 @@ module.exports = function(env) {
 					<video height="400" autoplay loop>
 						<source src="./images/voltran.mp4" type="video/mp4" />
 					</video>
-					<h4 style="font-size:3.5rem">const webpack = require("webpack")</h4>
+					<h2>Yazmaya devam</h2>
 				</section>
 				<section>
 					<h4>npm i -D extract-text-webpack-plugin@2.1.2</h4>
@@ -412,10 +410,11 @@ module.exports = function(env) {
   new ExtractTextPlugin({ filename: "styles.css" }),
 ]</code></pre>
 					</div>
-					<aside class="notes">npm ls --depth 0 | options object string olabilir</aside>
+					<aside class="notes">npm ls --depth 0 | pluginde options object yerine string olabilir</aside>
 				</section>
 				<section>
 					<pre><code class="js">{ filename: "[name]_[hash:5].css" } // [id] [contenthash]</code></pre>
+					<p>her compilation'da farklı isimde bir dosya <i>emit</i> ediyor</p>
 					<div class="fragment">
 						<h4>npm i -D clean-webpack-plugin</h4>
 						<pre><code class="js">const CleanWebpackPlugin = require("clean-webpack-plugin");
@@ -446,23 +445,9 @@ return {
   ]
 }</code></pre>
 					</div>
-				<div class="fragment">
-					<pre><code class="sh">> npm i react react-dom</code></pre>
-				</div>
 				</section>
 				<section>
-					<pre><code class="js">new HtmlWebpackPlugin({
-  title: "Taytıl",
-  template: "template.html"
-})</code></pre>
-<div class="fragment">
-	<p>./src/template.html</p>
-	<pre><code class="html">
-		asdasdasd
-	</code></pre>
-</div>
-				</section>
-				<section>
+					<h4>npm i react react-dom</h4>
 					<p>./src/index.js</p>
 					<pre><code class="js">import "./index.css"
 import React from "react"
@@ -470,7 +455,62 @@ import ReactDOM from "react-dom"
 
 const Component = () => <h1>Merhaba Dünya</h1>;
 
-ReactDOM.render(&lt;Component /&gt;, document.getElementById("app"));</code></pre>
+ReactDOM.render(&lt;Component /&gt;, document.body);</code></pre>
+<div class="fragment">
+	<pre><code class="js">ReactDOM.render(&lt;Component /&gt;, document.getElementById("app"));</code></pre></code></pre>
+</div>
+<aside class="notes">composability göster - bundle minify et</aside>
+				</section>
+				<section>
+					<pre><code class="js">new HtmlWebpackPlugin({
+  title: "Taytıl",
+  template: "template.html" // relative to global context
+})</code></pre>
+					<div class="fragment">
+	<p>./src/template.html</p>
+	<pre><code class="html">&lt;head&gt;
+  &lt;title&gt;&lt;%= htmlWebpackPlugin.options.title %&gt;&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;div id="app"&gt;&lt;/div&gt;
+&lt;/body&gt;</code></pre>
+					</div>
+				</section>
+				<section>
+					<h4>npm i -D postcss-loader autoprefixer</h4>
+					<pre><code class="js">const autoprefixer = require("autoprefixer");
+return {
+  // ......
+  {
+    test: /\.css$/,
+    use : [
+      // ......
+      {
+        loader: "postcss-loader",
+        options: { plugins: [autoprefixer] }
+      }
+    ]
+  }
+}</code></pre>
+					<div class="fragment">
+						<p>./src/index.css</p>
+						<pre><code class="css">#app { box-shadow: 10px 5px 5px green; }</code></pre>
+					</div>
+				</section>
+				<section>
+					<h5>pop quiz</h5>
+					<div class="fragment">
+						<pre><code class="js">const Component = () => &lt;h1&gt;&lt;b&gt;Merhaba Dünya&lt;/b&gt;&lt;/h1&gt;;</code></pre>
+						<pre><code class="css">h1 b { color: red; }</code></pre>
+					</div>
+					<div class="fragment">
+						<pre><code class="css">h1 {
+  & b {
+    color: red;
+  }
+}</code></pre>
+						<pre><code class="sh">> npm repo postcss-nesting</code></pre>
+					</div>
 				</section>
 			</section>
 			<section>
@@ -512,6 +552,9 @@ ReactDOM.render(&lt;Component /&gt;, document.getElementById("app"));</code></pr
   ],
 }</code></pre>
 				<p>CSS minimization da yapıyor</p>
+			</section>
+			<section>
+				<h4>const webpack = require("webpack");</h4>
 			</section>
 			<section>
 				<p style="font-size:1.5rem">package.json</p>
