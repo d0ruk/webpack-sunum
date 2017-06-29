@@ -44,7 +44,8 @@ img {
 }
 
 mark {
-  background-color: #D1FFB3;
+  /*padding: 5px!important;*/
+  background-color: rgba(0,255,0,.2)!important;
 }
 
 #acc {

@@ -288,6 +288,7 @@ module.exports = function(env) {
 					<pre><code class="sh">> npm i &lt;herhangi bir şey&gt;</code></pre>
 					<p>index.js</p>
 					<pre><code class="js">const lib = require("herhangi")</code></pre>
+					<aside class="notes">mvp branch'inden demo yap</aside>
 				</section>
 			</section>
 			<section>
@@ -503,6 +504,7 @@ return {
 						<pre><code class="js">const Component = () => &lt;h1&gt;&lt;b&gt;Merhaba Dünya&lt;/b&gt;&lt;/h1&gt;;</code></pre>
 						<pre><code class="css">h1 b { color: red; }</code></pre>
 					</div>
+					<hr>
 					<div class="fragment">
 						<pre><code class="css">h1 {
   & b {
@@ -528,12 +530,55 @@ return {
 }</code></pre>
 				<div class="fragment">
 					<p>yani</p>
-					<pre><code class="js">module.exports = env => {
+					<pre><code class="js" data-noescape>module.exports = env => {
   const isDev = env === "development";
 
   return {};
 }</code></pre>
 				</div>
+			</section>
+			<section>
+				<h4>const webpack = require("webpack");</h4>
+				<pre><code class="sh">> git checkout voltran
+> npm i</code></pre>
+				<div class="fragment">
+					<ul>
+						<li>CSS importLoaders</li>
+						<li>webpack core'da bir sürü plugin var</li>
+						<li></li>
+						<li></li>
+					</ul>
+				</div>
+				<aside class="notes">importLoaders @import için</aside>
+			</section>
+			<section>
+<pre style="margin: 0.2rem auto"><code class="js">module.exports = function(env) {
+  const isDev = env === "development";
+
+  const toAppend = isDev
+    ? []
+    : [new CleanWebpackPlugin([path.resolve(__dirname, "build")])];
+
+  return {}
+}</code></pre>
+<div class="fragment">
+<pre style="margin: 0.2rem auto"><code class="js">output: {
+  filename: isDev
+    ? "[name].js"
+    : "[name]_[hash:5].js",
+  path: path.resolve(__dirname, "build"),
+}</code></pre>
+</div>
+<div class="fragment">
+	<pre style="margin: 0.2rem auto"><code class="js">plugins: [
+  /*******************/
+  new ExtractTextPlugin({
+    filename: isDev
+      ? "[name].css"
+      : "[name]_[hash:5].css",
+  }),
+].concat(toAppend)</code></pre>
+</div>
 			</section>
 			<section>
 				<pre><code class="sh">> webpack -p</code></pre>
@@ -554,7 +599,28 @@ return {
 				<p>CSS minimization da yapıyor</p>
 			</section>
 			<section>
-				<h4>const webpack = require("webpack");</h4>
+				<pre><code class="js">return {
+  plugins: [
+    /*******************/,
+    new webpack.DefinePlugin({
+      process: {
+        env: {
+          NODE_ENV: isDev
+            ? JSON.stringify("development")
+            : JSON.stringify("production")
+        }
+      }
+    }),
+  ]
+}</code></pre>
+<div class="fragment">
+	<p>index.js</p>
+	<pre><code class="js">const Component = () => (
+  <div>
+    <pre>{JSON.stringify(process, null, 2)}</pre>
+  </div>
+);</code></pre>
+</div>
 			</section>
 			<section>
 				<p style="font-size:1.5rem">package.json</p>
