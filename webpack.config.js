@@ -3,6 +3,8 @@ const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const CleanWebpackPlugin = require("clean-webpack-plugin");
+const autoprefixer = require("autoprefixer");
+const nesting = require("postcss-nesting");
 
 module.exports = function(env) {
   return {
@@ -23,7 +25,14 @@ module.exports = function(env) {
           use: ExtractTextPlugin.extract({
             fallback: "style-loader",
             use: [
-              { loader: "css-loader" },
+              {
+                loader: "css-loader",
+                options: { importLoaders: 1 }
+              },
+              {
+                loader: "postcss-loader",
+                options: { plugins: [autoprefixer, nesting] }
+              }
             ]
           })
         },
@@ -46,7 +55,7 @@ module.exports = function(env) {
       }),
       new webpack.WatchIgnorePlugin([path.resolve(__dirname, "build")]/*, { watch: true }*/),
       new ExtractTextPlugin({ filename: "[name]_[hash:5].css" }),
-      new CleanWebpackPlugin([path.resolve(__dirname, "build")]),
+      // new CleanWebpackPlugin([path.resolve(__dirname, "build")]),
     ],
   }
 }
