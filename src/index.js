@@ -3,11 +3,11 @@ import React from "react"
 import ReactDOM from "react-dom"
 
 const Component = () => (
-  <h1>
-    <b>
-      Merhaba Dünya
-    </b>
-  </h1>
+  <div>
+    <pre>
+      {JSON.stringify(process, null, 2)}
+    </pre>
+  </div>
 );
 
 ReactDOM.render(<Component />, document.getElementById("app"));

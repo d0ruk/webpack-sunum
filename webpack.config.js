@@ -7,13 +7,21 @@ const autoprefixer = require("autoprefixer");
 const nesting = require("postcss-nesting");
 
 module.exports = function(env) {
+  const isDev = env === "development";
+
+  const toAppend = isDev
+    ? []
+    : [new CleanWebpackPlugin([path.resolve(__dirname, "build")])];
+
   return {
     context: path.resolve(__dirname, "src"),
     entry: {
       "main": "./index.js",
     },
     output: {
-      filename: "[name]_[hash:5].js",
+      filename: isDev
+        ? "[name].js"
+        : "[name]_[hash:5].js",
       path: path.resolve(__dirname, "build"),
       // publicPath: "//cdn.example.com/"
     },
@@ -53,9 +61,21 @@ module.exports = function(env) {
         title: "Taytıl",
         template: "template.html"
       }),
-      new webpack.WatchIgnorePlugin([path.resolve(__dirname, "build")]/*, { watch: true }*/),
-      new ExtractTextPlugin({ filename: "[name]_[hash:5].css" }),
-      // new CleanWebpackPlugin([path.resolve(__dirname, "build")]),
-    ],
+      // new webpack.WatchIgnorePlugin([path.resolve(__dirname, "build")]/*, { watch: true }*/),
+      new ExtractTextPlugin({
+        filename: isDev
+          ? "[name].css"
+          : "[name]_[hash:5].css",
+      }),
+      new webpack.DefinePlugin({
+        process: {
+          env: {
+            NODE_ENV: isDev
+              ? JSON.stringify("development")
+              : JSON.stringify("production")
+          }
+        }
+      }),
+    ].concat(toAppend),
   }
 }
