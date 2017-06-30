@@ -9,5 +9,4 @@ const Component = () => (
     </pre>
   </div>
 );
-
 ReactDOM.render(<Component />, document.getElementById("app"));
