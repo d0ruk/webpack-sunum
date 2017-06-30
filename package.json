@@ -5,7 +5,7 @@
   "scripts": {
     "start": "webpack",
     "watch": "webpack -w",
-    "dev": "webpack -w --hide-modules --env development"
+    "dev": "webpack -w --progress --hide-modules --env development"
   },
   "repository": {
     "type": "git",
