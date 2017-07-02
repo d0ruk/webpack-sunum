@@ -53,9 +53,9 @@ module.exports = function(env) {
         title: "Taytıl",
         template: "template.html"
       }),
-      new webpack.WatchIgnorePlugin([path.resolve(__dirname, "build")]/*, { watch: true }*/),
+      // new webpack.WatchIgnorePlugin([path.resolve(__dirname, "build")]/*, { watch: true }*/),
       new ExtractTextPlugin({ filename: "[name]_[hash:5].css" }),
-      // new CleanWebpackPlugin([path.resolve(__dirname, "build")]),
+      new CleanWebpackPlugin([path.resolve(__dirname, "build/**.**")]),
     ],
   }
 }
