@@ -11,7 +11,7 @@ module.exports = function(env) {
 
   const toAppend = isDev
     ? []
-    : [new CleanWebpackPlugin([path.resolve(__dirname, "build")]),
+    : [new CleanWebpackPlugin([path.resolve(__dirname, "build/**.**")]),
         new webpack.optimize.UglifyJsPlugin({
           compress: {
             // warnings: false,
