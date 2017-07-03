@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "webpack",
-    "watch": "webpack -w",
-    "dev": "webpack -w --progress --hide-modules --env development"
+    "start": "webpack --hide-modules",
+    "watch": "webpack -w --hide-modules",
+    "dev": "webpack -w --progress --hide-modules --env development",
+    "build": "webpack --progress --hide-modules --env production"
   },
   "repository": {
     "type": "git",

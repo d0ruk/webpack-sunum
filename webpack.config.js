@@ -1,3 +1,4 @@
+// const chalk = require("chalk");
 const path = require("path");
 const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
@@ -11,12 +12,13 @@ module.exports = function(env) {
 
   const toAppend = isDev
     ? []
-    : [new CleanWebpackPlugin([path.resolve(__dirname, "build")])];
+    : [new CleanWebpackPlugin([path.resolve(__dirname, "build/**.**")])];
 
   return {
     context: path.resolve(__dirname, "src"),
     entry: {
-      "main": "./index.js",
+      "home": "./home.js",
+      "about": "./about.js",
     },
     output: {
       filename: isDev
@@ -58,24 +60,32 @@ module.exports = function(env) {
     },
     plugins: [
       new HtmlWebpackPlugin({
-        title: "Taytıl",
-        template: "template.html"
+        title: "Home",
+        template: "template.html",
+        filename: "home.html",
+        chunks: ["home", "commons"],
       }),
-      // new webpack.WatchIgnorePlugin([path.resolve(__dirname, "build")]/*, { watch: true }*/),
+      new HtmlWebpackPlugin({
+        title: "About",
+        template: "template.html",
+        filename: "about.html",
+        chunks: ["commons", "about"],
+      }),
       new ExtractTextPlugin({
         filename: isDev
           ? "[name].css"
           : "[name]_[hash:5].css",
       }),
-      new webpack.DefinePlugin({
-        process: {
-          env: {
-            NODE_ENV: isDev
-              ? JSON.stringify("development")
-              : JSON.stringify("production")
-          }
-        }
-      }),
+      // new webpack.optimize.CommonsChunkPlugin({ name: ["commons"] }),
+      // new webpack.optimize.CommonsChunkPlugin(["commons"]),
+      // new webpack.optimize.CommonsChunkPlugin({
+      //   name: "commons",
+      //   minChunks: function(m, cnt) {
+      //     // return m.context && m.context.includes("node_modules");
+      //     return cnt >= 2;
+      //   },
+      //   // minChunks: 2
+      // }),
     ].concat(toAppend),
   }
 }
