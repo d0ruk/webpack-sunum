@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "webpack",
+    "start": "webpack --hide-modules",
     "watch": "webpack -w"
   },
   "repository": {
@@ -20,10 +20,12 @@
     "clean-webpack-plugin": "^0.1.16",
     "css-loader": "^0.28.4",
     "extract-text-webpack-plugin": "^2.1.2",
+    "file-loader": "^0.11.2",
     "html-webpack-plugin": "^2.29.0",
     "postcss-loader": "^2.0.6",
     "postcss-nesting": "^4.0.1",
     "style-loader": "^0.18.2",
+    "url-loader": "^0.5.9",
     "webpack": "^3.0.0"
   },
   "dependencies": {

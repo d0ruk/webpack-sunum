@@ -45,6 +45,19 @@ module.exports = function(env) {
               options: { presets: ["react", "env"] }
             }
           ]
+        },
+        {
+          test: /.svg$/,
+          include: path.resolve(__dirname, "src"),
+          use : [
+            {
+              loader: "url-loader",
+              options: {
+                limit: 10,
+                name: "[name].[hash:5].[ext]",
+              }
+            }
+          ]
         }
       ]
     },
