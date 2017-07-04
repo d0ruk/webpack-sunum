@@ -16,6 +16,7 @@
 
       node.innerHTML = `<span id="acc">${accumulator}</span>`;
       timeoutID = setInterval(tick, 1000);
+      tick();
     }
 
     this.stop = function() {

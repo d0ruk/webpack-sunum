@@ -50,9 +50,9 @@ mark {
 
 #acc {
   position: absolute;
-  left: 5%;
-  top: 5%;
-  font-size: 10rem;
+  left: 3%;
+  top: 3%;
+  font-size: 5rem;
   color: rgba(255, 0, 0, .7);
   font-variant: small-caps;
 }

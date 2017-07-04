@@ -20,7 +20,11 @@
 				<img style="border-radius:80%" src="images/animal-the-muppets.jpg" width="20%">
 				<p>Doruk Kutlu</p>
 				<p>JavaScript Geliştirici</p>
-				<p><em>@doruk</em></p>
+				<div style="display:flex;align-items:center;justify-content:center;">
+					<img src="images/twitter.png" height=50>&nbsp;<span>@doruk</span>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<img src="images/github.png" height=50>&nbsp;<span>@d0ruk</span>
+				</div>
 			</section>
 			<section>
 				<section>
@@ -422,7 +426,7 @@ module.exports = function(env) {
 
 return {
   plugins: [
-    new CleanWebpackPlugin([path.resolve(__dirname, "build")]),
+    new CleanWebpackPlugin([path.resolve(__dirname, "build/**.**")]),
   ]
 }</code></pre>
 					</div>
@@ -484,14 +488,17 @@ return {
   // ......
   {
     test: /\.css$/,
-    use : [
+    use : ExtractTextPlugin.extract({
       // ......
-      {
-        loader: "postcss-loader",
-        options: { plugins: [autoprefixer] }
-      }
-    ]
-  }
+      use: [
+        // ......
+        {
+          loader: "postcss-loader",
+          options: { plugins: [autoprefixer] }
+        }
+      ]
+    })
+  },
 }</code></pre>
 					<div class="fragment">
 						<p>./src/index.css</p>
@@ -513,6 +520,37 @@ return {
 }</code></pre>
 						<pre><code class="sh">> npm repo postcss-nesting</code></pre>
 					</div>
+				</section>
+				<section>
+					<h4>npm i -D file-loader url-loader</h4>
+					<pre><code class="js">module: {
+  rules: [
+    {
+      test: /.svg$/,
+      include: path.resolve(__dirname, "src"),
+      use : [
+        { loader: "url-loader" }
+      ]
+    }
+  ]
+}</code></pre>
+					<div class="fragment">
+						<pre><code class="js">options: {
+  limit: 10 * 1024,
+  name: "[name].[hash:5].[ext]",
+}</code></pre>
+					</div>
+				</section>
+				<section>
+					<p>index.js</p>
+					<pre><code class="js">import logo from "./webpack-logo.svg"
+
+const Component = () => (
+  <div>
+    <h1><b>Merhaba Dünya</b></h1>
+    <img src={logo} height={250} />
+  </div>
+);</code></pre>
 				</section>
 			</section>
 			<section>
@@ -536,6 +574,7 @@ return {
   return {};
 }</code></pre>
 				</div>
+				<aside class="notes">config'e isDev koy</aside>
 			</section>
 			<section>
 				<h4>const webpack = require("webpack");</h4>
@@ -552,17 +591,17 @@ return {
 				<aside class="notes">importLoaders @import için</aside>
 			</section>
 			<section>
-<pre style="margin: 0.2rem auto"><code class="js">module.exports = function(env) {
+<pre style="margin: .15rem auto"><code class="js">module.exports = function(env) {
   const isDev = env === "development";
 
   const toAppend = isDev
     ? []
-    : [new CleanWebpackPlugin([path.resolve(__dirname, "build")])];
+    : [new CleanWebpackPlugin([path.resolve(__dirname, "build/**.**")])];
 
   return {}
 }</code></pre>
 <div class="fragment">
-<pre style="margin: 0.2rem auto"><code class="js">output: {
+<pre style="margin: .15rem auto"><code class="js">output: {
   filename: isDev
     ? "[name].js"
     : "[name]_[hash:5].js",
@@ -570,7 +609,7 @@ return {
 }</code></pre>
 </div>
 <div class="fragment">
-	<pre style="margin: 0.2rem auto"><code class="js">plugins: [
+	<pre style="margin: .15rem auto"><code class="js">plugins: [
   /*******************/
   new ExtractTextPlugin({
     filename: isDev
@@ -581,11 +620,11 @@ return {
 </div>
 			</section>
 			<section>
-				<pre><code class="sh">> webpack -p</code></pre>
-				<p>===</p>
-				<pre><code class="sh">> webpack --optimize-minimize --define process.env.NODE_ENV="production"</code></pre>
-				<p>===</p>
-				<pre><code class="js">{
+				<pre style="margin:.2rem auto"><code class="sh">> webpack -p</code></pre>
+				<p style="margin:.2rem auto">===</p>
+				<pre style="margin:.2rem auto"><code class="sh">> webpack --optimize-minimize --define process.env.NODE_ENV="production"</code></pre>
+				<p style="margin:.2rem auto">===</p>
+				<pre style="margin:.2rem auto"><code class="js">{
   module: /*****************/,
   plugins: [
     new webpack.optimize.UglifyJsPlugin(),
@@ -596,10 +635,10 @@ return {
     }),
   ],
 }</code></pre>
-				<p>CSS minimization da yapıyor</p>
+				<p style="margin:.2rem auto">CSS minimization da yapıyor</p>
 			</section>
 			<section>
-				<pre><code class="js">return {
+				<pre style="margin: .5rem auto"><code class="js">return {
   plugins: [
     /*******************/,
     new webpack.DefinePlugin({
@@ -614,8 +653,8 @@ return {
   ]
 }</code></pre>
 <div class="fragment">
-	<p>index.js</p>
-	<pre><code class="js">const Component = () => (
+	<p style="margin: .5rem auto;font-size:2rem">index.js</p>
+	<pre style="margin: .5rem auto"><code class="js">const Component = () => (
   <div>
     <pre>{JSON.stringify(process, null, 2)}</pre>
   </div>
@@ -623,49 +662,67 @@ return {
 </div>
 			</section>
 			<section>
+				<pre><code class="js">[new CleanWebpackPlugin(/**************/),
+  new webpack.optimize.UglifyJsPlugin({
+    compress: {
+      warnings: false,
+      drop_console: true,
+      dead_code: true,
+      unused: true,
+    },
+    mangle: false,
+    comments: false,
+  }),
+]</code></pre>
 				<p style="font-size:1.5rem">package.json</p>
 				<pre><code class="js">scripts: {
-  "watch": /*****************/,
-  "build": /*****************/,
-  "dev": webpack --env development,
+  /*****************/
+  "dev": "webpack -w --progress --hide-modules --env development"
 }</code></pre>
-<p style="font-size:1.5rem">webpack.config.js</p>
-<pre><code class="js">module.exports = env => {
-  const isDev = env === "development";
-
-  return {
-    entry: /*****************/,
-    output: /*****************/,
-    plugins: [
-      new webpack.DefinePlugin({
-        process: {
-          env: { NODE_ENV: JSON.stringify("production") }
-        }
-      }),
-    ]
-  }
-}</code></pre>
-<aside class="notes">config çirkinleşmeye başladı</aside>
-			</section>
-			<section>
-			<pre><code class="js">plugins: [
-  new webpack.DefinePlugin({
-  process: {
-    env: { NODE_ENV: isDev
-			? JSON.stringify("development")
-			: JSON.stringify("production"),
-    }
-  }
-}),
-]</code></pre>
+				<aside class="notes">mangle kapat | webpack'de uglify-js@2 var - uglify sadece ES5'de çalışır, ES6 uglification için farklı lib gerekir</aside>
 			</section>
 			<section>
 				<ul>
 					<li><a href="https://github.com/survivejs/webpack-merge">webpack-merge</a></li>
 					<li><a href="https://github.com/andywer/webpack-blocks">webpack-blocks</a></li>
 					<li><a href="https://github.com/easy-webpack">easy-webpack</a></li>
-					<li></li>
+					<li><a href="http://lisperator.net/uglifyjs/compress">UglifyJS</a></li>
+					<li><a href="https://github.com/webpack-contrib/babili-webpack-plugin">babili-webpack-plugin</a></li>
 				</ul>
+			</section>
+		</section>
+		<section>
+			<section>
+				<img src="./images/nar.jpg" width="500">
+				<h2>Chunks</h2>
+			</section>
+			<section>
+        <pre><code class="js">plugins: [new webpack.optimize.CommonsChunkPlugin(options)]</code></pre>
+				<pre><code class="js">{
+  name: String, // ya da names: [String]
+  filename: String, // default'u output.filename
+  minChunks: Number|Infinity|function(module, count) -> boolean,
+}</code></pre>
+			</section>
+			<section>
+				<pre><code class="js">entry: {
+  "home": "./home.js",
+  "about": "./about.js",
+},</code></pre>
+				<div class="fragment">
+					<pre><code class="js">plugins: [
+  new HtmlWebpackPlugin({
+    title: "Home",
+    template: "template.html",
+    filename: "home.html",
+  }),
+  new HtmlWebpackPlugin({
+    title: "About",
+    template: "template.html",
+    filename: "about.html",
+  }),
+]</code></pre>
+				</div>
 			</section>
 		</section>
 		<section>
@@ -679,22 +736,26 @@ return {
 				<pre><code class="js">const webpack = require("webpack");
 console.log(webpack);</code></pre>
 			</section>
-		</section>
-		<section>
 			<section>
-				<img src="./images/nar.jpg" width="500">
-				<h2>Chunks</h2>
-			</section>
-			<section>
-        <pre><code class="js">new webpack.optimize.CommonsChunkPlugin(options)</code></pre>
-				<pre><code class="js">{
-  name: String, // ya da names: [String]
-  filename: String, // konulmayabilir
+				<pre><code class="js">"scripts": {
+	 "start": "webpack-dev-server -d",
+	 "build-page": "webpack -p",
+	 "build-both": "webpack -p --env.output page-shell && webpack -p --env.appShell --env.output app-shell",
+	 "deploy": "rm -rf dist && webpack -p --env.output page-shell && webpack -p --env.appShell --env.output app-shell && gh-pages -d dist",
+	 "build-shell": "webpack -p --env.appShell"
+ },</code></pre>module.hot.accept(function(err) {
+	if(err) {
+		console.error("Cannot apply hot update", err);
+	}
+});
+}
+ <pre><code class="js">if(module.hot) {
+  module.hot.accept(function(err) {
+    if(err) {
+      console.error("Cannot apply hot update", err);
+    }
+  });
 }</code></pre>
-			</section>
-			<section>
-				multiple HTML plugins
-
 			</section>
 		</section>
 		<section>
@@ -702,6 +763,7 @@ console.log(webpack);</code></pre>
 			<section>
 				<pre><code class="js">target: "web" | "webworker" | "node" | "async-node" | "node-webkit" | "electron" | "electron-renderer"</code></pre>
 				<pre><code class="js">bail: true | false</code></pre>
+				<pre><code class="js">devtool: isDev ? "cheap-module-eval-source-map" : "source-map"</code></pre>
 			</section>
 			<section>
 				<p>output.publicPath = "/assets/[hash]/"</p>
@@ -709,6 +771,12 @@ console.log(webpack);</code></pre>
 	path: "/home/proj/cdn/assets/[hash]",
 	publicPath: "http://cdn.example.com/assets/[hash]/"
 }</p>
+			</section>
+			<section>
+				<p>tree shaking</p>
+				<p>dead code elimination, ulaşılamayan blokları temizler</p>
+				<p>tree shaking, ulaşılabilen ama kullanmadığınız blokları temizler</p>
+				<p>babel'da modules: false yapmanız lazım zira import statement'ları transpile edilmemeli</p>
 			</section>
 		</section>
 		<section>
