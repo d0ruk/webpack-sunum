@@ -14,14 +14,13 @@ module.exports = function(env) {
     : [new CleanWebpackPlugin([path.resolve(__dirname, "build/**.**")]),
         new webpack.optimize.UglifyJsPlugin({
           compress: {
-            // warnings: false,
+            warnings: false,
             drop_console: true,
             dead_code: true,
             unused: true,
           },
-          mangle: true,
-          // comments: false,
-          screw_ie8: true,
+          mangle: false,
+          comments: false,
         }),
       ];
 
