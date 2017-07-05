@@ -62,17 +62,17 @@ console.log(revealingModule.public); // 42
 <aside class="notes">pros - multiple exports in a single file<br>cons - can import only with eval | no async | circular dependencies</aside>
 				</section>
 				<section>
-					<p>CommonJS</p>
+					<p style="margin:.1rem auto">CommonJS</p>
 <pre><code class="js">// b.js
 exports = 42; // bir etkisi yok</code></pre>
 <pre><code class="js">// a.js
 var b = require("./b");
 console.log(b); // {}</code></pre>
-<hr>
+<hr style="margin:.1rem auto">
 <pre><code class="js">module.exports = 42;</code></pre>
 <pre><code class="js">var b = require("./b");
 console.log(b); // 42</code></pre>
-<hr>
+<hr style="margin:.1rem auto">
 <pre><code class="js">exports.meaning = 42; // module.exports overrides</code></pre>
 <pre><code class="js">var b = require("./b");
 console.log(b); // { meaning: 42 }</code></pre>
@@ -679,7 +679,7 @@ const Component = () => (
   /*****************/
   "dev": "webpack -w --progress --hide-modules --env development"
 }</code></pre>
-				<aside class="notes">mangle kapat | webpack'de uglify-js@2 var - uglify sadece ES5'de çalışır, ES6 uglification için farklı lib gerekir</aside>
+				<aside class="notes">webpack'de uglify-js@2 var - uglify sadece ES5'de çalışır, ES6 uglification için farklı lib gerekir</aside>
 			</section>
 			<section>
 				<ul>
@@ -724,38 +724,138 @@ const Component = () => (
 ]</code></pre>
 				</div>
 			</section>
+			<section>
+				<pre><code class="js">plugins : [
+  new webpack.optimize.CommonsChunkPlugin({ name: "commons" }),
+]</code></pre>
+				<div class="fragment">
+	<pre><code class="js">plugins: [
+  new webpack.optimize.CommonsChunkPlugin("commons"),
+]</code></pre>
+				<p>tomato tomato</p>
+				</div>
+				<aside class="notes">mangle aç</aside>
+			</section>
+			<section>
+				<pre><code class="js">new webpack.optimize.CommonsChunkPlugin({
+  name: "commons",
+  minChunks: 2
+})</code></pre>
+					<div class="fragment">
+					<pre><code class="js">new webpack.optimize.CommonsChunkPlugin({
+  name: "commons",
+  minChunks: function(m, cnt) {
+    return cnt === 2;
+  }
+})</code></pre>
+					<p>tomato tomato</p>
+				</div>
+			</section>
+			<section>
+				<pre><code class="js">minChunks: function(m, cnt) {
+  return m.context && m.context.includes("node_modules");
+}</code></pre>
+				<p>bak çok ilginç</p>
+				<pre><code class="js">{ name: ["commons", "asdawd"] }</code></pre>
+			</section>
+			<section>
+				<p>pop quiz</p>
+				<p><em>node_modules</em>'de olanları bir chunk'a,<br>runtime kodunu bir başka chunk'a koy</p>
+				<div class="fragment">
+					<pre><code class="js">new webpack.optimize.CommonsChunkPlugin({
+  name: "bootstrap",
+  minChunks: (m, cnt) => !m.context
+})</code></pre>
+				</div>
+				<aside class="notes">take five</aside>
+			</section>
 		</section>
 		<section>
 			<section>
-				<img src="./images/plugins.jpg" width="400">
-				<h2>Plugins abound</h2>
+				<video height="400" autoplay loop>
+					<source src="./images/ballmer.mp4" type="video/mp4" />
+				</video>
+				<h3>developers developers developers</h3>
 			</section>
 			<section>
-				<pre><code class="sh">> touch test.js</code></pre>
-				<p>test.js</p>
-				<pre><code class="js">const webpack = require("webpack");
-console.log(webpack);</code></pre>
+				<h4>npm i -D webpack-dev-server</h4>
+				<p>middleware'la webpack compilation yapan<br>node.js http(s) server</p>
+				<div class="fragment">
+<pre><code class="json">"scripts": {
+  "start": "webpack -w --progress --hide-modules",
+  "dev": "webpack-dev-server",
+  "build": "webpack --progress --hide-modules --env production"
+},</code></pre>
+				</div>
+				<div class="fragment">
+					<ul>
+						<li>frontend <i>asset</i>'lerinizi serve etmeye yarar - backend development yapmaya uygun değil</li>
+						<li><i>emit</i> edilenleri bellekte saklar (in-memory) - fiziksel dosya yaratmaz</li>
+					</ul>
+				</div>
 			</section>
 			<section>
-				<pre><code class="js">"scripts": {
-	 "start": "webpack-dev-server -d",
-	 "build-page": "webpack -p",
-	 "build-both": "webpack -p --env.output page-shell && webpack -p --env.appShell --env.output app-shell",
-	 "deploy": "rm -rf dist && webpack -p --env.output page-shell && webpack -p --env.appShell --env.output app-shell && gh-pages -d dist",
-	 "build-shell": "webpack -p --env.appShell"
- },</code></pre>module.hot.accept(function(err) {
-	if(err) {
-		console.error("Cannot apply hot update", err);
-	}
-});
-}
- <pre><code class="js">if(module.hot) {
+				<pre><code class="json">"dev": "webpack-dev-server --env development",</code></pre>
+				<div class="fragment">
+				<pre style="margin: 0 auto"><code class="js">return {
+  entry: /*************/,
+  output: /*************/,
+  devtool: "source-map"
+}</code></pre>
+<pre><code class="js">class Component extends React.Component {
+  constructor() {
+    super();
+    setTimeout(() => { throw new Error("boom"); }, 2000);
+  }
+
+  render() {}
+}</code></pre>
+				</div>
+			</section>
+			<section>
+				<pre><code class="js">devtool: isDev ? "eval-source-map" : "source-map",</code></pre>
+				<div class="fragment"><img style="margin:0" src="./images/devtool.png"></div>
+			</section>
+			<section>
+				<p><b>H</b>ot <b>M</b>odule <b>R</b>eplacement</p>
+				<ul>
+					<li>işlenen modülleri <i>live</i> olarak yükler (refresh etmeden)</li>
+					<li></li>
+				</ul>
+				<div class="fragment">
+					<pre><code class="js">if(module.hot) {
   module.hot.accept(function(err) {
     if(err) {
       console.error("Cannot apply hot update", err);
     }
   });
 }</code></pre>
+					<ul>
+						<li>modüllerin accept() etmesi bubble-up şeklinde propagate eder</li>
+						<li></li>
+					</ul>
+				</div>
+				<aside class="notes">It’s like LiveReload for every module</aside>
+			</section>
+			<section>
+				<pre><code class="js">return {
+  entry: /*************/,
+  output: /*************/,
+  devServer: {
+    port: 9000,
+    open: true,
+    // inline:true,
+    hot: true,
+    overlay: true,
+    stats: "minimal",
+  }
+}</code></pre>
+<div class="fragment">
+	<pre><code class="js">const toAppend = isDev
+  ? [new webpack.HotModuleReplacementPlugin(),
+     new webpack.NamedModulesPlugin()]
+  : [new CleanWebpackPlugin(/*************/),</code></pre>
+</div>
 			</section>
 		</section>
 		<section>
