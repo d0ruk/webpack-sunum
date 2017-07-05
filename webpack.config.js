@@ -10,7 +10,9 @@ module.exports = function(env) {
   const isDev = env === "development";
 
   const toAppend = isDev
-    ? []
+    ? [new webpack.HotModuleReplacementPlugin(),
+        // new webpack.NamedModulesPlugin(),
+      ]
     : [new CleanWebpackPlugin([path.resolve(__dirname, "build/**.**")]),
         new webpack.optimize.UglifyJsPlugin({
           compress: {
@@ -28,6 +30,7 @@ module.exports = function(env) {
     context: path.resolve(__dirname, "src"),
     entry: {
       "main": "./index.js",
+      "ticker": "./Ticker.js"
     },
     output: {
       filename: isDev
@@ -77,6 +80,7 @@ module.exports = function(env) {
         filename: isDev
           ? "[name].css"
           : "[name]_[hash:5].css",
+        disable: isDev,
       }),
       new webpack.DefinePlugin({
         process: {
@@ -88,5 +92,16 @@ module.exports = function(env) {
         }
       }),
     ].concat(toAppend),
+    devtool: isDev ? "eval-source-map" : "source-map",
+    devServer: {
+      port: 9000,
+      open: true,
+      // inline:true,
+      hot: true,
+      overlay: true,
+      // contentBase: "/build",
+      // compress: true,
+      stats: "minimal",
+    }
   }
 }

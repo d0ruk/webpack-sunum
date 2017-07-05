@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "start": "webpack -w --progress --hide-modules",
-    "dev": "webpack -w --progress --hide-modules --env development",
+    "dev": "webpack-dev-server --env development",
     "build": "webpack --progress --hide-modules --env production"
   },
   "repository": {
@@ -25,7 +25,8 @@
     "postcss-loader": "^2.0.6",
     "postcss-nesting": "^4.0.1",
     "style-loader": "^0.18.2",
-    "webpack": "^3.0.0"
+    "webpack": "^3.0.0",
+    "webpack-dev-server": "^2.5.0"
   },
   "dependencies": {
     "react": "^15.6.1",

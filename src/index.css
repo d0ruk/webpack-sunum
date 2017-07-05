@@ -8,6 +8,6 @@ body {
 
 h1 {
   & b {
-    color: red;
+    color: white;
   }
 }
