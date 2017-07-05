@@ -12,7 +12,18 @@ module.exports = function(env) {
 
   const toAppend = isDev
     ? []
-    : [new CleanWebpackPlugin([path.resolve(__dirname, "build/**.**")])];
+    : [new CleanWebpackPlugin([path.resolve(__dirname, "build/**.**")]),
+        new webpack.optimize.UglifyJsPlugin({
+          compress: {
+            warnings: false,
+            drop_console: true,
+            dead_code: true,
+            unused: true,
+          },
+          mangle: false,
+          comments: false,
+        }),
+      ];
 
   return {
     context: path.resolve(__dirname, "src"),
@@ -63,13 +74,13 @@ module.exports = function(env) {
         title: "Home",
         template: "template.html",
         filename: "home.html",
-        chunks: ["home", "commons"],
+        excludeChunks: ["about"],
       }),
       new HtmlWebpackPlugin({
         title: "About",
         template: "template.html",
         filename: "about.html",
-        chunks: ["commons", "about"],
+        excludeChunks: ["home"],
       }),
       new ExtractTextPlugin({
         filename: isDev
@@ -77,15 +88,17 @@ module.exports = function(env) {
           : "[name]_[hash:5].css",
       }),
       // new webpack.optimize.CommonsChunkPlugin({ name: ["commons"] }),
-      // new webpack.optimize.CommonsChunkPlugin(["commons"]),
-      // new webpack.optimize.CommonsChunkPlugin({
-      //   name: "commons",
-      //   minChunks: function(m, cnt) {
-      //     // return m.context && m.context.includes("node_modules");
-      //     return cnt >= 2;
-      //   },
-      //   // minChunks: 2
-      // }),
+      new webpack.optimize.CommonsChunkPlugin({
+        name: "commons",
+        minChunks: function(m, cnt) {
+          return m.context && m.context.includes("node_modules");
+        },
+        // minChunks: 2
+      }),
+      new webpack.optimize.CommonsChunkPlugin({
+        name:["bootstrap",
+        minChunks: (m, cnt) => !m.context
+      }),
     ].concat(toAppend),
   }
 }
