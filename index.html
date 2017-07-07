@@ -92,7 +92,7 @@ console.log(b); // { meaning: 42 }</code></pre>
   -- require.js</code></pre>
 <pre><code class="html">&lt;script data-main="src/index" src="require.js"&gt;&lt;/script&gt;</code></pre>
 <pre><code class="js">require(["alias"], function(alias) {
-  // Eğer "b.js" ya da "c.js" de require() ile asenkron yükleme yapıyorsa
+  // Eğer "alias" da require() ile asenkron yükleme yapıyorsa
   // o bitene kadar bekledikten sonra bu noktaya geliyor
 });</code></pre>
 <aside class="notes">requirejs | SystemJS - async olduğu için design gerektiriyor (race conditions)</aside>
@@ -167,7 +167,7 @@ module.exports = function(env) {
 				</section>
 				<section>
 					<p><b>Girdi:</b> kaynak kodunuz (modüller ağı) ve konfigürasyonunuz</p>
-					<p><b>Çıktı: </b> tarayıcılarda kullanılabilecek <i>bundle</i> dosyaları</p>
+					<p><b>Çıktı: </b> <i>emit</i> edilen fiziksel dosyalar</p>
 				</section>
 				<section>
 					<img src="images/webpack-modular.png">
@@ -182,7 +182,6 @@ const jpeg = require("./static/resim2.jpeg");
 const foo = require("./bar.js)";
 // ya da ES2015 import
 import foo from "./bar.js"</code></pre>
-<pre><code class="html">&lt;img src=...&gt;</code></pre>
 <pre><code class="js">@import url("https://fonts.googleapis.com/css?family=Roboto");
 @font-face {
   font-family: "Roboto";
@@ -312,14 +311,15 @@ module.exports = function(env) {
 					</ul>
         </section>
 				<section>
-					<ul><li>kullanımı <i>legal</i> birden çok sentaks var</li></ul>
+					<ul><li>kullanımı legal birden çok sentaks var</li></ul>
 					<pre><code class="js">{
   entry: {
     "chunkName1": "./src/index.js",  // string | [string]
     "chunkName2": "./src/index.amd.js"
   },
 }</code></pre>
-<pre><code class="js">module: {
+					<div class="fragment">
+					<pre><code class="js">module: {
   rules: [
     {
       test: /\.css$/,
@@ -331,7 +331,8 @@ module.exports = function(env) {
     }
   ]
 }</code></pre>
-<aside class="notes">user input key'ler "" içinde</aside>
+					</div>
+					<aside class="notes">user input key'ler "" içinde</aside>
 				</section>
 				<section>
 					<ul><li><i>emit</i> edilen dosyaların isimleri değişken olabiliyor</li></ul>
@@ -368,22 +369,20 @@ module.exports = function(env) {
 }</code></pre>
 				</section>
 				<section>
-					<h2>Temel config ayarları</h2>
-					<pre><code class="js">module: {
+					<p>Config objesinin çoğu bu 4 key altında tanımlanıyor</p>
+					<pre><code class="js">return {
   entry: { "chunkName": [String] },
   output: {
     filename: String,
     path: String
   },
-  module : {
+  module: {
     rules: [{
       test: RegExp,
-      use: [{
-        loader: String,
-        options: {}
-      }, {}, {}],
+      use: [{ loader: String, options: {} }, {}, {}],
     }, {}, {}]
   },
+  plugins: []
 }</code></pre>
 				</section>
 			</section>
@@ -582,11 +581,15 @@ const Component = () => (
 > npm i</code></pre>
 				<div class="fragment">
 					<ul>
-						<li>CSS importLoaders</li>
-						<li>webpack core'da bir sürü plugin var</li>
-						<li></li>
-						<li></li>
+						<li><i>env</i> değiştiğinde config de değişmeli</li>
+						<li>webpack CLI --config alabiliyor</li>
 					</ul>
+					<pre><code class="sh">> webpack --config myConfig.js</code></code></pre>
+				</div>
+				<div class="fragment">
+					<pre><code class="js">const arr = [1, 2, 3];
+const arr2 = arr.concat(true ? [4] : [5]); // [1, 2, 3, 4]
+const arr3 = arr.concat(false ? [4] : [5]); // [1, 2, 3, 5]</code></pre>
 				</div>
 				<aside class="notes">importLoaders @import için</aside>
 			</section>
@@ -635,7 +638,6 @@ const Component = () => (
     }),
   ],
 }</code></pre>
-				<p style="margin:.2rem auto">CSS minimization da yapıyor</p>
 			</section>
 			<section>
 				<pre style="margin: .5rem auto"><code class="js">return {
@@ -675,25 +677,28 @@ const Component = () => (
   }),
 ]</code></pre>
 				<p style="font-size:1.5rem">package.json</p>
-				<pre><code class="js">scripts: {
-  /*****************/
-  "dev": "webpack -w --progress --hide-modules --env development"
+				<pre><code class="json">  "scripts": {
+  "start": "webpack --progress --hide-modules",
+  "watch": "webpack -w --progress --hide-modules --env development"
 }</code></pre>
-				<aside class="notes">webpack'de uglify-js@2 var - uglify sadece ES5'de çalışır, ES6 uglification için farklı lib gerekir</aside>
+				<aside class="notes">
+					<ul>
+						<li>webpack'de uglify-js@2 var - uglify sadece ES5'de çalışır, ES6 uglification için farklı lib gerekir</li>
+						<li>--env vermediğimiz zaman production oluyor</li>
+					</ul>
+				</aside>
 			</section>
 			<section>
 				<ul>
 					<li><a href="https://github.com/survivejs/webpack-merge">webpack-merge</a></li>
 					<li><a href="https://github.com/andywer/webpack-blocks">webpack-blocks</a></li>
 					<li><a href="https://github.com/easy-webpack">easy-webpack</a></li>
-					<li><a href="http://lisperator.net/uglifyjs/compress">UglifyJS</a></li>
-					<li><a href="https://github.com/webpack-contrib/babili-webpack-plugin">babili-webpack-plugin</a></li>
 				</ul>
 			</section>
 		</section>
 		<section>
 			<section>
-				<img src="./images/nar.jpg" width="500">
+				<img src="./images/analyzer.jpg" width="700">
 				<h2>Chunks</h2>
 			</section>
 			<section>
@@ -755,12 +760,14 @@ const Component = () => (
 				<pre><code class="js">minChunks: function(m, cnt) {
   return m.context && m.context.includes("node_modules");
 }</code></pre>
-				<p>bak çok ilginç</p>
-				<pre><code class="js">{ name: ["commons", "asdawd"] }</code></pre>
+				<div class="fragment">
+					<p>bak çok ilginç</p>
+					<pre><code class="js">{ name: ["commons", "asdawd"] }</code></pre>
+				</div>
 			</section>
 			<section>
 				<p>pop quiz</p>
-				<p><em>node_modules</em>'de olanları bir chunk'a,<br>runtime kodunu bir başka chunk'a koy</p>
+				<p><em>node_modules</em>'da olanları bir chunk'a,<br>runtime kodunu bir başka chunk'a koy</p>
 				<div class="fragment">
 					<pre><code class="js">new webpack.optimize.CommonsChunkPlugin({
   name: "bootstrap",
@@ -820,7 +827,7 @@ const Component = () => (
 				<p><b>H</b>ot <b>M</b>odule <b>R</b>eplacement</p>
 				<ul>
 					<li>modüllerdeki değişiklikleri <i>.hot-update</i> dosyalarıyla canlı uygulamaya patch eder</li>
-					<li>sayfa refresh etmeden uygulamayı geliştirmeyi sağlar</li>
+					<li>sayfa refresh etmeden geliştirme yapmayı sağlar</li>
 					<li>böylece uygulamadaki <i>etkilenmeyen</i> modüller state'lerini kaybetmezler</li>
 				</ul>
 				<div class="fragment">
@@ -922,6 +929,24 @@ const Component = () => (
 			</div>
 		</section>
 		<section>
+			<p>webpack.LoaderOptionsPlugin</p>
+			<pre><code class="js">new webpack.LoaderOptionsPlugin({
+  minimize: true,
+  debug: false,
+  options: {
+    context: __dirname
+  }
+})</code></pre>
+			<div class="fragment">
+				<ul>
+					<li>webpack config'lerine backwards compatibility olması için var</li>
+					<li>CLI'ın eski versiyonları, bazı ayarları global olarak loader'lara veriyor</li>
+					<li>webpack@3'ten itibaren artık loader'a options pass etmek config'i yazanın sorumluluğu</li>
+					<li>gelecekteki bir sürümde kaldırılacak</li>
+				</ul>
+			</div>
+		</section>
+		<section>
 			<p>tree shaking</p>
 			<p>dead code elimination, ulaşılamayan blokları temizler</p>
 			<p>tree shaking, ulaşılabilen ama kullanmadığınız blokları temizler</p>
@@ -933,6 +958,17 @@ const Component = () => (
 			<section>
 				<pre><code class="js">target: "web" | "webworker" | "node" | "async-node" | "node-webkit" | "electron" | "electron-renderer"</code></pre>
 				<pre><code class="js">bail: true | false</code></pre>
+				<div class="fragment">
+					<pre><code class="js">module: {
+  rules: [
+    {
+      test: /\.js?$/,
+      enforce: "pre",
+      loader: "eslint-loader"
+    }
+  ]
+}</code></pre>
+				</div>
 			</section>
 			<section>
 				<pre><code class="js">return {
@@ -951,6 +987,15 @@ const Component = () => (
 					<p>yerine</p>
 					<pre><code class="js">import Utility from "Utilities/utility"</code></pre>
 				</div>
+			</section>
+			<section>
+				<pre><code class="js">output: {
+  filename: "[name]_[hash:5].js",
+  path: path.resolve(__dirname, "build"),
+  libraryTarget: "amd",
+  library: "myLib"
+}</code></pre>
+<pre><code class="js">libraryTarget: "var" | "amd" | "umd" | "this" | "window" | "global" | "commonjs" | "commonjs2"</code></pre>
 			</section>
 		</section>
 		<section>
