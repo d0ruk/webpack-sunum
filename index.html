@@ -506,12 +506,10 @@ return {
 				</section>
 				<section>
 					<h5>pop quiz</h5>
+					<pre><code class="js">const Component = () => &lt;h1&gt;&lt;b&gt;Merhaba Dünya&lt;/b&gt;&lt;/h1&gt;;</code></pre>
+					<pre><code class="css">h1 b { color: red; }</code></pre>
 					<div class="fragment">
-						<pre><code class="js">const Component = () => &lt;h1&gt;&lt;b&gt;Merhaba Dünya&lt;/b&gt;&lt;/h1&gt;;</code></pre>
-						<pre><code class="css">h1 b { color: red; }</code></pre>
-					</div>
-					<hr>
-					<div class="fragment">
+						<hr>
 						<pre><code class="css">h1 {
   & b {
     color: red;
@@ -677,7 +675,7 @@ const arr3 = arr.concat(false ? [4] : [5]); // [1, 2, 3, 5]</code></pre>
   }),
 ]</code></pre>
 				<p style="font-size:1.5rem">package.json</p>
-				<pre><code class="json">  "scripts": {
+				<pre><code class="json">"scripts": {
   "start": "webpack --progress --hide-modules",
   "watch": "webpack -w --progress --hide-modules --env development"
 }</code></pre>
