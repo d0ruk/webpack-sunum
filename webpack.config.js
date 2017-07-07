@@ -96,7 +96,7 @@ module.exports = function(env) {
         // minChunks: 2
       }),
       new webpack.optimize.CommonsChunkPlugin({
-        name:["bootstrap",
+        name:["bootstrap"],
         minChunks: (m, cnt) => !m.context
       }),
     ].concat(toAppend),
