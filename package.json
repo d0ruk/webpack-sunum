@@ -1,11 +1,8 @@
 {
   "name": "webpack-sunum",
-  "version": "1.0.0",
-  "main": "index.js",
   "scripts": {
-    "start": "webpack -w --progress --hide-modules",
-    "dev": "webpack -w --progress --hide-modules --env development",
-    "build": "webpack --progress --hide-modules --env production"
+    "start": "webpack --progress --hide-modules",
+    "dev": "webpack -w --progress --hide-modules --env development"
   },
   "repository": {
     "type": "git",
