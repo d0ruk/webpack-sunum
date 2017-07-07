@@ -926,33 +926,12 @@ const arr3 = arr.concat(false ? [4] : [5]); // [1, 2, 3, 5]</code></pre>
 },</code></pre>
 			</div>
 		</section>
-		<section>
-			<p>webpack.LoaderOptionsPlugin</p>
-			<pre><code class="js">new webpack.LoaderOptionsPlugin({
-  minimize: true,
-  debug: false,
-  options: {
-    context: __dirname
-  }
-})</code></pre>
-			<div class="fragment">
-				<ul>
-					<li>webpack config'lerine backwards compatibility olması için var</li>
-					<li>CLI'ın eski versiyonları, bazı ayarları global olarak loader'lara veriyor</li>
-					<li>webpack@3'ten itibaren artık loader'a options pass etmek config'i yazanın sorumluluğu</li>
-					<li>gelecekteki bir sürümde kaldırılacak</li>
-				</ul>
-			</div>
-		</section>
-		<section>
-			<p>tree shaking</p>
-			<p>dead code elimination, ulaşılamayan blokları temizler</p>
-			<p>tree shaking, ulaşılabilen ama kullanmadığınız blokları temizler</p>
-			<p>babel'da modules: false yapmanız lazım zira import statement'ları transpile edilmemeli</p>
-		</section>
 	</section>
 		<section>
-			<section><h2>ve diğerleri...</h2></section>
+			<section>
+				<img src="./images/deckardcain.jpg" height="400px">
+				<h2>Du bi dinle</h2>
+			</section>
 			<section>
 				<pre><code class="js">target: "web" | "webworker" | "node" | "async-node" | "node-webkit" | "electron" | "electron-renderer"</code></pre>
 				<pre><code class="js">bail: true | false</code></pre>
@@ -995,16 +974,43 @@ const arr3 = arr.concat(false ? [4] : [5]); // [1, 2, 3, 5]</code></pre>
 }</code></pre>
 <pre><code class="js">libraryTarget: "var" | "amd" | "umd" | "this" | "window" | "global" | "commonjs" | "commonjs2"</code></pre>
 			</section>
-		</section>
-		<section>
 			<section>
-				<img src="./images/alberteinstein.jpg" height="300px">
-				<div style="display:flex;flex-direction:column">
-				<p style="align-self:flex-start">
-					“If we knew what it was we were doing, it would not be called research, would it?”
-				</p>
-				<span style="align-self:flex-end">Albert Einstein</span>
-			</div>
+				<p>webpack.LoaderOptionsPlugin</p>
+				<pre><code class="js">new webpack.LoaderOptionsPlugin({
+  minimize: true,
+  debug: false,
+  options: {
+    context: __dirname
+  }
+})</code></pre>
+				<div class="fragment">
+					<ul>
+						<li>eski versiyon config'lere uyumluluk için var</li>
+						<li>CLI'ın eski versiyonları, bazı ayarları global olarak loader'lara veriyor</li>
+						<li>webpack@3'ten itibaren, loader'a options vermek config'i yazanın sorumluluğu</li>
+						<li>gelecekteki bir sürümde kaldırılacak</li>
+					</ul>
+				</div>
+			</section>
+			<section>
+				<p>tree shaking</p>
+				<ul style="margin: 0 auto"><li>dead code elimination, ulaşılamayan blokları temizler</li></ul>
+				<pre style="margin: .2rem auto"><code class="js">if (false) console.log("dead code")</code></pre>
+				<div class="fragment">
+					<ul style="margin: 0 auto"><li>tree shaking, ulaşılabilen ama kullanmadığınız kod öbeklerini temizler</li></ul>
+					<pre style="margin: .2rem auto"><code class="js">import { aSingleFunction } from "huge-lib"</code></pre>
+				</div>
+				<div class="fragment">
+					<ul style="margin: 0 auto"><li>ES2015 modüllerini transpile etmemelisiniz</li></ul>
+					<pre style="margin: .2rem auto"><code class="js">use: [
+  {
+    loader: "babel-loader",
+    options: {
+      presets: ["react", ["env", { modules: false }]],
+    }
+  }
+]</code></pre>
+				</div>
 			</section>
 			<section>
 				<ul>
@@ -1015,6 +1021,14 @@ const arr3 = arr.concat(false ? [4] : [5]); // [1, 2, 3, 5]</code></pre>
 					<li><a href="https://webpack.land/">webpack land</a></li>
 					<li><a href="https://medium.com/tag/webpack">medium.com/webpack</a></li>
 				</ul>
+			</section>
+		</section>
+		<section>
+			<section>
+				<video height="400" autoplay loop>
+					<source src="./images/hypnotoad.mp4" type="video/mp4" />
+				</video>
+				<h2>Teşekkürler</h2></h2>
 			</section>
 		</section>
 			<!-- ENDS HERE -->
