@@ -342,7 +342,7 @@ module.exports = function(env) {
     publicPath: "//cdn.example.com/[hash]",
   }
 }</code></pre>
-					<p>hesaplanan hash default olarak 20 karakter</p>
+					<p>hesaplanan hash default 20 karakter</p>
 					<p>[hash:5] gibi limitlenebiliyor</p>
 				</section>
 				<section>
@@ -795,8 +795,6 @@ const Component = () => (
 				</div>
 			</section>
 			<section>
-				<pre><code class="json">"dev": "webpack-dev-server --env development",</code></pre>
-				<div class="fragment">
 				<pre style="margin: 0 auto"><code class="js">return {
   entry: /*************/,
   output: /*************/,
@@ -810,6 +808,8 @@ const Component = () => (
 
   render() {}
 }</code></pre>
+				<div class="fragment">
+					<pre><code class="json">"dev": "webpack-dev-server --env development",</code></pre>
 				</div>
 			</section>
 			<section>
@@ -819,64 +819,138 @@ const Component = () => (
 			<section>
 				<p><b>H</b>ot <b>M</b>odule <b>R</b>eplacement</p>
 				<ul>
-					<li>işlenen modülleri <i>live</i> olarak yükler (refresh etmeden)</li>
-					<li></li>
+					<li>modüllerdeki değişiklikleri <i>.hot-update</i> dosyalarıyla canlı uygulamaya patch eder</li>
+					<li>sayfa refresh etmeden uygulamayı geliştirmeyi sağlar</li>
+					<li>böylece uygulamadaki <i>etkilenmeyen</i> modüller state'lerini kaybetmezler</li>
 				</ul>
 				<div class="fragment">
-					<pre><code class="js">if(module.hot) {
-  module.hot.accept(function(err) {
-    if(err) {
-      console.error("Cannot apply hot update", err);
-    }
-  });
-}</code></pre>
-					<ul>
-						<li>modüllerin accept() etmesi bubble-up şeklinde propagate eder</li>
-						<li></li>
-					</ul>
+					<p>aktif etmek için 3 şey gerekir</p>
+					<ol>
+						<li>client tarafındaki modülün HMR'ı accept() etmesi</li>
+						<li>devServer: { hot: true }</li>
+						<li>webpack.HotModuleReplacementPlugin</li>
+					</ol>
 				</div>
 				<aside class="notes">It’s like LiveReload for every module</aside>
 			</section>
 			<section>
+				<p>modülün HMR kabul etmesi</p>
+				<pre><code class="js">if(module.hot) {
+  module.hot.accept();
+}</code></pre>
+				<ul>
+					<li>modüllerin accept() etmesi bubble-up şeklinde propagate eder</li>
+					<li>modül ağacındaki tek bir modülün HMR'ı accept() etmesi bütün modül ağacını yeniden compile eder</li>
+				</ul>
+			</section>
+			<section>
+				<p>config'de devServer</p>
 				<pre><code class="js">return {
   entry: /*************/,
   output: /*************/,
   devServer: {
     port: 9000,
     open: true,
-    // inline:true,
     hot: true,
     overlay: true,
-    stats: "minimal",
+    stats: "normal",
   }
 }</code></pre>
-<div class="fragment">
-	<pre><code class="js">const toAppend = isDev
-  ? [new webpack.HotModuleReplacementPlugin(),
-     new webpack.NamedModulesPlugin()]
-  : [new CleanWebpackPlugin(/*************/),</code></pre>
-</div>
+				<div class="fragment">
+					<pre><code class="js">stats: {
+  assets: true,
+  chunks: false,
+  colors: true,
+  entrypoints: true,
+  modules: false,
+  timings: true,
+}</code></pre>
+				</div>
 			</section>
+			<section>
+				<p>.hot-update chunk'larını oluşturan plugin</p>
+				<pre><code class="js">const toAppend = isDev
+  ? [new webpack.HotModuleReplacementPlugin(),
+    new webpack.NamedModulesPlugin()]
+  : [new CleanWebpackPlugin(/*************/),]</code></pre>
+				<pre><code class="sh">> npm run dev</code></pre>
+				<div class="fragment"><p>CSS hot update ediyor mu?</p></div>
+				<div class="fragment">
+				<pre><code class="js">new ExtractTextPlugin({
+  filename: isDev
+    ? "[name].css"
+    : "[name]_[hash:5].css",
+  disable: isDev,
+})</code></pre>
+				</div>
+				<aside class="notes">HMR production'da kullanılmamalı</aside>
+			</section>
+			<section>
+				<h4>npm i -D babel-plugin-syntax-dynamic-import</h4>
+				<pre><code class="js">{
+  loader: "babel-loader",
+  options: {
+    presets: ["react", "env"],
+    plugins: [require("babel-plugin-syntax-dynamic-import")],
+  } // v7.x syntax
+}</code></pre>
+				<div class="fragment">
+					<p>webpack.config.js</p>
+					<pre><code class="js">entry: {
+  "main": "./index.js",
+  // "ticker": "./Ticker.js"
+},</code></pre>
+				</div>
+			</section>
+			<section>
+				<p>index.js</p>
+				<pre><code class="js">import("./Ticker.js")
+.then(m => {
+  ReactDOM.render(&lt;Component /&gt;, document.getElementById("app"));
+  ReactDOM.render(&lt;m.default /&gt;, document.getElementById("app2"));
+})
+.catch(console.error)</code></pre>
+				<div class="fragment">
+				<pre><code class="js">import(/* webpackChunkName: "sayac" */ "./Ticker.js")</code></pre>
+				<pre><code class="js">output: {
+  filename: isDev
+    ? "[name].js"
+    : "[name]_[hash:5].js",
+  path: path.resolve(__dirname, "build"),
+  chunkFilename: "[name].chunk.js",
+},</code></pre>
+			</div>
 		</section>
+		<section>
+			<p>tree shaking</p>
+			<p>dead code elimination, ulaşılamayan blokları temizler</p>
+			<p>tree shaking, ulaşılabilen ama kullanmadığınız blokları temizler</p>
+			<p>babel'da modules: false yapmanız lazım zira import statement'ları transpile edilmemeli</p>
+		</section>
+	</section>
 		<section>
 			<section><h2>ve diğerleri...</h2></section>
 			<section>
 				<pre><code class="js">target: "web" | "webworker" | "node" | "async-node" | "node-webkit" | "electron" | "electron-renderer"</code></pre>
 				<pre><code class="js">bail: true | false</code></pre>
-				<pre><code class="js">devtool: isDev ? "cheap-module-eval-source-map" : "source-map"</code></pre>
 			</section>
 			<section>
-				<p>output.publicPath = "/assets/[hash]/"</p>
-				<p>output: {
-	path: "/home/proj/cdn/assets/[hash]",
-	publicPath: "http://cdn.example.com/assets/[hash]/"
-}</p>
-			</section>
-			<section>
-				<p>tree shaking</p>
-				<p>dead code elimination, ulaşılamayan blokları temizler</p>
-				<p>tree shaking, ulaşılabilen ama kullanmadığınız blokları temizler</p>
-				<p>babel'da modules: false yapmanız lazım zira import statement'ları transpile edilmemeli</p>
+				<pre><code class="js">return {
+  entry: /*************/,
+  output: /*************/,
+  resolve: {
+    extensions: [".js", "json", ".styl"],
+    alias: {
+      Utilities: path.resolve(__dirname, "src/utilities/"),
+      Templates: path.resolve(__dirname, "src/templates/")
+    }
+  },
+}</code></pre>
+				<div class="fragment">
+					<pre><code class="js">import Utility from "../../utilities/utility"</code></pre>
+					<p>yerine</p>
+					<pre><code class="js">import Utility from "Utilities/utility"</code></pre>
+				</div>
 			</section>
 		</section>
 		<section>
