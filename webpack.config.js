@@ -11,9 +11,13 @@ module.exports = function(env) {
 
   const toAppend = isDev
     ? [new webpack.HotModuleReplacementPlugin(),
-        // new webpack.NamedModulesPlugin(),
+        new webpack.NamedModulesPlugin(),
       ]
     : [new CleanWebpackPlugin([path.resolve(__dirname, "build/**.**")]),
+        new webpack.LoaderOptionsPlugin({
+          minimize: true,
+          debug: false
+        }),
         new webpack.optimize.UglifyJsPlugin({
           compress: {
             warnings: false,
@@ -23,6 +27,7 @@ module.exports = function(env) {
           },
           mangle: false,
           comments: false,
+          sourceMap: true,
         }),
       ];
 
@@ -30,14 +35,15 @@ module.exports = function(env) {
     context: path.resolve(__dirname, "src"),
     entry: {
       "main": "./index.js",
-      "ticker": "./Ticker.js"
+      // "ticker": "./Ticker.js"
     },
     output: {
       filename: isDev
         ? "[name].js"
         : "[name]_[hash:5].js",
       path: path.resolve(__dirname, "build"),
-      // publicPath: "//cdn.example.com/"
+      chunkFilename: "[name].chunk.js",
+      hotUpdateChunkFilename: "[hash:5].hot.js",
     },
     module: {
       rules: [
@@ -64,10 +70,13 @@ module.exports = function(env) {
           use: [
             {
               loader: "babel-loader",
-              options: { presets: ["react", "env"] }
+              options: {
+                presets: ["react", ["env", { modules: false }]],
+                plugins: [require("babel-plugin-syntax-dynamic-import")],
+              }
             }
           ]
-        }
+        },
       ]
     },
     plugins: [
@@ -82,6 +91,7 @@ module.exports = function(env) {
           : "[name]_[hash:5].css",
         disable: isDev,
       }),
+      // new webpack.optimize.ModuleConcatenationPlugin(),
       new webpack.DefinePlugin({
         process: {
           env: {
@@ -96,12 +106,16 @@ module.exports = function(env) {
     devServer: {
       port: 9000,
       open: true,
-      // inline:true,
       hot: true,
       overlay: true,
-      // contentBase: "/build",
-      // compress: true,
-      stats: "minimal",
+      stats: {
+        assets: true,
+        chunks: false,
+        colors: true,
+        entrypoints: true,
+        modules: false,
+        timings: true,
+      },
     }
   }
 }
